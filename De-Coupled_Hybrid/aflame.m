@@ -27,7 +27,8 @@ R1 =(XinFuel(:,1).*(NinFuel)*erxn1);
 R2 = (XinFuel(:,2).*(NinFuel)+R1)*erxn2;
 R3 =(XinFuel(:,4).*(NinFuel))*erxn3;
 
-NO2 = (XinAir(:,7).*(NinAir));
+NO2 = (XinAir(:,7).*(NinAir)); %kmol flow of O2
+NO2_stoich = zeros(length(NinAir),1)+.0025; %kmol of air needed for complete combustion
 
 %Total Enthalpy of Stoich Combustion
 hrxn = (R1.*hrxn1)-(R2.*hrxn2)-(R3.*hrxn3);
@@ -36,20 +37,15 @@ hrxn = (R1.*hrxn1)-(R2.*hrxn2)-(R3.*hrxn3);
 
 T_guess = ones(length(TinAir),1).*1000;
 error = 100;
-for i = 1:100
-    n_guess = (i/100).*NinAir;
-    [~,h_guess] = enthalpy(TinAir,XinAir,n_guess);
+while error > 1
+    [~,h_guess] = enthalpy(T_guess,XinAir,NO2_stoich);
     Cp = SpecHeat(T_guess,XinAir);
-    T_error = ((h_guess))./(Cp.*n_guess);
-    T_guess = T_guess+T_error;
-    error = (h_guess)-hrxn;
-    if abs(error) < 1
-        T_stoich = T_guess;
-        N_stoich = NO2 - n_guess;
-        break
-    end
+    T_error = h_guess./(Cp.*NO2_stoich);
+    T_guess = T_guess + T_error;
+    error = 2*(hrxn - h_guess)./(Cp.*NO2_stoich);
 end
-t_out = 2;
+
+
 
 
 
