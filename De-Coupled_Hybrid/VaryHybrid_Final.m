@@ -1,5 +1,5 @@
 n = 100;%# of iterations
-m = 0;
+m = 1;
 if m ==1  %decision on whether to run constant vs varying recovery
     recovery = zeros(n);
     Efficiency = zeros(n);
