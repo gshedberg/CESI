@@ -1,5 +1,7 @@
 function [Tout, Xout, Nout, Q] = combust(TXNin_air, TXNin_fuel,Q,TIT)
-
+erxn1 = 1;
+erxn2 = 1;
+erxn3 = 1;
 
 h = enthalpy(TXNin_air(:,1)+200);
 LHVH2 = zeros(length(TIT),1)+240420; %Lower HEating Value of H2
