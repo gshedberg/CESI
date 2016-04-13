@@ -24,7 +24,7 @@ if m ==1  %decision on whether to run constant vs varying recovery
         recovery = linspace(.99*(j/n),.99*(j/n))'; %Fixed value of recovery
         TIT = linspace(1200,1200)';
         Fuel = 1; % 0 for no suplemental fuel into combustor, 1 for fixed % recovery
-        Pr = linspace(15,15)'; % Compressor pressure ratio
+        Pr = linspace(4,4)'; % Compressor pressure ratio
         vectorLength = max([length(Pr), length(P_ITMperm),length(V_loss)]); %set length of vectors to correspond to given inputs
 
         TXNin = zeros(vectorLength,9);
@@ -52,7 +52,7 @@ else %original model that outputs all vectors [100,1]
     recovery = linspace(.4,.4)'; %Fixed value of recovery
     TIT = linspace(1200,1200)';
     Fuel = 0; % 0 for no suplemental fuel into combustor, 1 for fixed % recovery
-    Pr = linspace(3,5)'; % Compressor pressure ratio
+    Pr = linspace(15,15)'; % Compressor pressure ratio
     vectorLength = max([length(Pr), length(P_ITMperm),length(V_loss)]); %set length of vectors to correspond to given inputs
 
     TXNin = zeros(vectorLength,9);
@@ -74,8 +74,8 @@ else %original model that outputs all vectors [100,1]
        recovery(A) = 1;
     end
     hold on
-    x = V_fc;
-    y = recovery;
+    x = Pr;
+    y = Efficiency;
     
 end
 

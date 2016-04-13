@@ -1,4 +1,4 @@
-function [Wc,T_out,T_guess,Xout,Nout, P2,Q_transfer] = compress(TXNin, nc, Pr, Pin)
+function [Wc,T_out,Xout,Nout, P2,Q_transfer] = compress(TXNin, nc, Pr, Pin)
 Ru = 8.314;
 
 T1 = TXNin(:,1); %Inlet Temp'
@@ -18,21 +18,21 @@ T2s = Pr.^(1-(1./gam)).*T1; %Isnetropic Temperature Change
 [~,H2s] = enthalpy(T2s, Xout,Nout); %Isentropic Enthalpy change
 
 H2 = (H2s-H1)./nc+H1; %Actual Enthalpy change
-
-T_guess = T2s;
-T_error = T1*0+ 100;
-while min(abs(T_error)) > .1
-    [~,H_guess] = enthalpy(T_guess, Xout, Nout);
-    T_error = (H2 - H_guess)./(Cp.*Nout);
-    T_guess  = T_guess + T_error; %Reiteration to calculate temperature out
+Q_transfer = Nout.*(H2s-H2);
+if Pr < 5
+    %HeatEx
+    dT = 283; %K
+    T_hotin = (1./Pr).^((gam-1)./gam).*1200;   %Isentropic Expansion Temperature
+    T_out = T_hotin - dT;
+    [~,H_itmin] = enthalpy(T_out,Xout,Nout);
+    Q_transfer = Nout.*(H_itmin-H2);
+else
+    T_out = T2s;
+    T_error = T1*0+ 100;
+    while min(abs(T_error)) > .1
+        [~,H_guess] = enthalpy(T_out, Xout, Nout);
+        T_error = (H2 - H_guess)./(Cp.*Nout);
+        T_out  = T_out + T_error; %Reiteration to calculate temperature out
+    end
 end
-
-%HeatEx
-dT = 283; %K
-T_coldin = T_guess;
-T_hotin = (1./Pr).^((gam-1)./gam).*1200;   %Isentropic Expansion Temperature
-T_out = T_hotin - dT;
-[~,H_itmin] = enthalpy(T_out,Xout,Nout);
-Q_transfer = Nout.*(H_itmin-H2);
 Wc = H2 - H1; %power taken for compression
-

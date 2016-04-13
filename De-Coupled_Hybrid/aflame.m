@@ -72,29 +72,29 @@ end
 %Stoich Temperature Flame
 Tout_stoich = T_guess;
 
-%Lean Reaction (more air)
-N_remain = Nout - N_stoich;
-
-Xout_lean(:,1) = ((XinFuel(:,1).*NinFuel + XinAir(:,1).*(NinAir-Stoich_flow))./N_remain)-(Xout_St(:,1).*N_stoich);
-Xout_lean(:,2) = ((XinFuel(:,2).*NinFuel + XinAir(:,2).*(NinAir-Stoich_flow))./N_remain)-(Xout_St(:,2).*N_stoich);
-Xout_lean(:,3) = ((XinFuel(:,3).*NinFuel + XinAir(:,3).*(NinAir-Stoich_flow))./N_remain)-(Xout_St(:,3).*N_stoich);
-Xout_lean(:,4) = ((XinFuel(:,4).*NinFuel + XinAir(:,4).*(NinAir-Stoich_flow))./N_remain)-(Xout_St(:,4).*N_stoich);
-Xout_lean(:,5) = ((XinFuel(:,5).*NinFuel + XinAir(:,5).*(NinAir-Stoich_flow))./N_remain)-(Xout_St(:,5).*N_stoich);
-Xout_lean(:,6) = ((XinFuel(:,6).*NinFuel + XinAir(:,6).*(NinAir-Stoich_flow))./N_remain)-(Xout_St(:,6).*N_stoich);
-Xout_lean(:,7) = ((XinFuel(:,7).*NinFuel + XinAir(:,7).*(NinAir-Stoich_flow))./N_remain)-(Xout_St(:,7).*N_stoich);
-
-%Total Enthalpy exiting combustor
-H_total = H_anode+H_resid+hrxn;
-%Remaining enthalpy
-H_remain = H_total - H_stoich;
-%Lean Temperature
-T_guess_2 = ones(length(TinAir),1).*1000;
-error_2 = 100;
-while abs(max(error_2)) > .01
-    [~,H_guess] = enthalpy(T_guess_2,Xout_lean,N_remain);
-    Cp = SpecHeat(T_guess_2,Xout_lean);
-    T_error_2 = (H_guess - H_remain)./(Cp.*N_remain);
-    T_guess_2 = T_guess_2 + T_error_2;
-    error_2 = H_guess - H_remain;
-end
-
+% %Lean Reaction (more air)
+% N_remain = Nout - N_stoich;
+% 
+% Xout_lean(:,1) = ((XinFuel(:,1).*NinFuel + XinAir(:,1).*(NinAir-Stoich_flow))./N_remain)-(Xout_St(:,1).*N_stoich);
+% Xout_lean(:,2) = ((XinFuel(:,2).*NinFuel + XinAir(:,2).*(NinAir-Stoich_flow))./N_remain)-(Xout_St(:,2).*N_stoich);
+% Xout_lean(:,3) = ((XinFuel(:,3).*NinFuel + XinAir(:,3).*(NinAir-Stoich_flow))./N_remain)-(Xout_St(:,3).*N_stoich);
+% Xout_lean(:,4) = ((XinFuel(:,4).*NinFuel + XinAir(:,4).*(NinAir-Stoich_flow))./N_remain)-(Xout_St(:,4).*N_stoich);
+% Xout_lean(:,5) = ((XinFuel(:,5).*NinFuel + XinAir(:,5).*(NinAir-Stoich_flow))./N_remain)-(Xout_St(:,5).*N_stoich);
+% Xout_lean(:,6) = ((XinFuel(:,6).*NinFuel + XinAir(:,6).*(NinAir-Stoich_flow))./N_remain)-(Xout_St(:,6).*N_stoich);
+% Xout_lean(:,7) = ((XinFuel(:,7).*NinFuel + XinAir(:,7).*(NinAir-Stoich_flow))./N_remain)-(Xout_St(:,7).*N_stoich);
+% 
+% %Total Enthalpy exiting combustor
+% H_total = H_anode+H_resid+hrxn;
+% %Remaining enthalpy
+% H_remain = H_total - H_stoich;
+% %Lean Temperature
+% T_guess_2 = ones(length(TinAir),1).*1000;
+% error_2 = 100;
+% while abs(max(error_2)) > .01
+%     [~,H_guess] = enthalpy(T_guess_2,Xout_lean,N_remain);
+%     Cp = SpecHeat(T_guess_2,Xout_lean);
+%     T_error_2 = (H_guess - H_remain)./(Cp.*N_remain);
+%     T_guess_2 = T_guess_2 + T_error_2;
+%     error_2 = H_guess - H_remain;
+% end
+% 

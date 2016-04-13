@@ -25,7 +25,7 @@ TIT = zeros(length(T1),1)+TIT;
 vectorLength = max([length(Pr), length(P_ITMperm),length(V_loss)]);
 LHVfuel = zeros(vectorLength,1)+8e5; %Lower heating value of CH4
 n_h2 = zeros(vectorLength,1);
-[Wc1,T2,~,X2,N2,P2,Qtrans] = compress([T1,X1,N1], CompEff, Pr, Pin); %Compressor Model
+[Wc1,T2,X2,N2,P2,Qtrans] = compress([T1,X1,N1], CompEff, Pr, Pin); %Compressor Model
 
 if length(varargin)<6   %Condition to decide whether to run at constant recovery or adjust to meet TIT%
     n_h2 = 0;
@@ -46,7 +46,7 @@ if length(varargin)<6   %Condition to decide whether to run at constant recovery
          X4 = X3;
         N4 = N3;
     
-        [Wc2,~,T5,X5,N5, P5,~] = compress([T4, X4, N4], CompEff, Pr2, P3);   %Compressor2 Model
+        [Wc2,T5,X5,N5, P5,~] = compress([T4, X4, N4], CompEff, Pr2, P3);   %Compressor2 Model
 
         T6 = zeros(length(T1),1)+1023;
         TXfuel = zeros(length(T1),8);
@@ -86,7 +86,7 @@ else %Run at constant recovery
     X4 = X3;
     N4 = N3;
 
-    [Wc2,~,T5,X5,N5,P5,~] = compress([T4, X4, N4], CompEff, Pr2, P3);
+    [Wc2,T5,X5,N5,P5,~] = compress([T4, X4, N4], CompEff, Pr2, P3);
 
     T6 = zeros(length(T1),1)+1023;
     TXfuel = zeros(length(T1),8);
