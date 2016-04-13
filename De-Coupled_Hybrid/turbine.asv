@@ -24,14 +24,14 @@ while abs(T_error) > .1      %Reiteration to calculate temperature out
     T9 = T9 - T_error; 
 end
 %Heatex
-h_hxout = N_out.*H2-Q;
+h_hxout = N_out.*(enthalpy(T9))-Q;
 T_hxout = zeros(length(Tin),1)+500;
 T_error = 100;
 while abs(T_error) > .1      %Reiteration to calculate temperature out
     [~,H_guess] = enthalpy(T_hxout,X_out,N_out);
     Cp = SpecHeat(T_hxout,X_out);
     T_error = (H_guess-h_hxout)./(Cp.*N_out);
-    T_hxout = T_hxout - T_error; 
+    T_out = T_hxout - T_error; 
 end
 Wt = H1 - H2;       %Isentropic expansion power generation
 end
