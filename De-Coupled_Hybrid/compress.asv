@@ -19,7 +19,7 @@ T2s = Pr.^(1-(1./gam)).*T1; %Isnetropic Temperature Change
 
 H2 = (H2s-H1)./nc+H1; %Actual Enthalpy change
 Q_transfer = Nout.*(H2s-H2);
-if Pr <= 6
+if Pr < 5
     %HeatEx
     dT = 283; %K
     T_hotin = (1./Pr).^((gam-1)./gam).*1200;   %Isentropic Expansion Temperature

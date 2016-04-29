@@ -15,7 +15,7 @@ T9s = Pr.^((gam-1)./gam).*Tin;   %Isentropic Expansion Temperature
 [~, H1] = enthalpy(Tin,X_out,N_out);   %Enthalpy in to turbine from combustor
 
 H2 = H1-EffTurb.*(H1-H2_s);           %Actual enthalpy out
-if Pr < .34
+if Pr < 1
     %Heatex
     h_hxout = N_out.*H2-Q;
     T9 = zeros(length(Tin),1)+500;

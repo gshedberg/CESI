@@ -1,5 +1,5 @@
 n = 100;%# of iterations
-m = 0;
+m = 1;
 if m ==1  %decision on whether to run constant vs varying recovery
     recovery = zeros(n);
     Efficiency = zeros(n);
@@ -48,11 +48,11 @@ if m ==1  %decision on whether to run constant vs varying recovery
     
 else %original model that outputs all vectors [100,1]
     P_ITMperm = linspace(50,50)'; %ITM back pressure in kPa
-    V_loss = linspace(.18,.18)'; %Fuel cell voltage
+    V_loss = linspace(.1,.)'; %Fuel cell voltage
     recovery = linspace(.5,.5)'; %Fixed value of recovery
     TIT = linspace(1200,1200)';
     Fuel = 0; % 0 for no suplemental fuel into combustor, 1 for fixed % recovery
-    Pr = linspace(3,6)'; % Compressor pressure ratio
+    Pr = linspace(15,15)'; % Compressor pressure ratio
     vectorLength = max([length(Pr), length(P_ITMperm),length(V_loss)]); %set length of vectors to correspond to given inputs
 
     TXNin = zeros(vectorLength,9);
