@@ -20,7 +20,7 @@ if m ==1  %decision on whether to run constant vs varying recovery
     n_h2 = zeros(n);
     for j= 1:n
         P_ITMperm = linspace(50,50)'; %ITM back pressure in kPa
-        V_loss = linspace(.3,.1)'; %Fuel cell voltage
+        V_loss = linspace(.18,.18)'; %Fuel cell voltage
         recovery = linspace(.99*(j/n),.99*(j/n))'; %Fixed value of recovery
         TIT = linspace(1200,1200)';
         Fuel = 1; % 0 for no suplemental fuel into combustor, 1 for fixed % recovery
@@ -47,12 +47,12 @@ if m ==1  %decision on whether to run constant vs varying recovery
     contour(x,y,z','showtext','on','linewidth',2)
     
 else %original model that outputs all vectors [100,1]
-    P_ITMperm = linspace(50,50)'; %ITM back pressure in kPa
-    V_loss = linspace(.18,.18)'; %Fuel cell voltage
+    P_ITMperm = linspace(25,300)'; %ITM back pressure in kPa
+    V_loss = linspace(.21,.21)'; %Fuel cell voltage
     recovery = linspace(.5,.5)'; %Fixed value of recovery
     TIT = linspace(1200,1200)';
     Fuel = 0; % 0 for no suplemental fuel into combustor, 1 for fixed % recovery
-    Pr = linspace(3,6)'; % Compressor pressure ratio
+    Pr = linspace(15,15)'; % Compressor pressure ratio
     vectorLength = max([length(Pr), length(P_ITMperm),length(V_loss)]); %set length of vectors to correspond to given inputs
 
     TXNin = zeros(vectorLength,9);
@@ -73,7 +73,12 @@ else %original model that outputs all vectors [100,1]
     if ~isempty(A)
        recovery(A) = 1;
     end
-    plot(V_fc,recovery);
+    figure
+    grid on
+    line(Pr,Efficiency,'linewidth',3);
+    xlabel('Pressure Ratio of Turbomachinery')
+    ylabel('Total System Efficiency')
+    title('Pressure Ratio of GT versus System Efficiency')
 end
 
 
