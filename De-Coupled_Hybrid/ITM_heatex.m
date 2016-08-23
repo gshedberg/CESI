@@ -1,5 +1,5 @@
 
-function [Tout, X_np, Nout, NO2, TO2, Q_preheat,R_actual,Rt] = ITM(TXNin, Pin,P_ITMperm, recovery)
+function [Tout, X_np, Nout, NO2, TO2, Q_preheat,R_actual,Rt] = ITM_heatex(TXNin, Pin,P_ITMperm, recovery,Q)
 T = TXNin(:,1);
 X_feed =TXNin(:,2:8); %Feed composition from compressor
 Nin = TXNin(:,9);

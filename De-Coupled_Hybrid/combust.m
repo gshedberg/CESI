@@ -1,7 +1,5 @@
 function [Tout, Xout, Nout, Q] = combust(TXNin_air, TXNin_fuel,Q,TIT)
-erxn1 = 1;
-erxn2 = 1;
-erxn3 = 1;
+
 
 h = enthalpy(TXNin_air(:,1)+200);
 LHVH2 = zeros(length(TIT),1)+240420; %Lower HEating Value of H2
@@ -18,9 +16,9 @@ hrxn2 = h(:,3)-h(:,2)-.5*h(:,7); %CO + .5 O2 --> CO2
 hrxn3 = h(:,5)-h(:,4)-.5*h(:,7); %H2 + .5 O2 -->  H2O
 
 %Total Enthalpy of combustion%
-R1 =(Xin_fuel(:,1).*(Nin_fuel)*erxn1);
-R2 = (Xin_fuel(:,2).*(Nin_fuel)+R1)*erxn2;
-R3 =(Xin_fuel(:,4).*(Nin_fuel))*erxn3;
+R1 =(Xin_fuel(:,1).*(Nin_fuel));
+R2 = (Xin_fuel(:,2).*(Nin_fuel)+R1);
+R3 =(Xin_fuel(:,4).*(Nin_fuel));
 
 Nout = (Nin_fuel + Nin_air + .5*R1 - .5*R2 - .5*R3);
 

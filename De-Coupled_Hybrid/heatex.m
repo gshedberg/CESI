@@ -1,17 +1,19 @@
-function [Tout,Q_transfer] = heatex(Pr,TXN)
-Ru = 8.314;
+function [T_guess] = heatex(TXNin)
 
-T1 = TXN(:,1); %Inlet Temp'
-Xout = TXN(:,2:8); %Inlet Composition
-Nout = TXN(:,9); %Inlet Air Flow
+Tin = TXNin(:,1);       %Temp in from ITM
+Xout = TXNin(:,2:8);       %Composition O2 from ITM
+Nout = TXNin(:,9);      %FLow rate O2 from ITM
+[~,H3] = enthalpy(Tin,Xout,Nout); %Enthalpy coming in to Heat Exchanger
 
-Tavg = (T1+Pr.^(1-1/1.4).*T1)/2;
-Cp = SpecHeat(Tavg, TXN(:,2:8));
-gam = Cp./(Cp-Ru);
-    %HeatEx
-dT = 283; %K
-T_hotin = (1./Pr).^((gam-1)./gam).*1200;   %Isentropic Expansion Temperature
-T_out = T_hotin - dT;
-[~,H_itmin] = enthalpy(T_out,Xout,Nout);
-Q_transfer = Nout.*(H_itmin-H2);
+
+T_guess = 300;
+T_error = 100;
+while T_error > .1
+    H_guess = enthalpy(T_guess, Xout, Nout);
+    Cp = SpecHeat(T_guess, Xout);
+    
+    T_error = (H_guess - H3)/(Cp*Nout);
+    T_guess = T_guess+T_error;
 end
+
+

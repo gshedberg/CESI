@@ -18,11 +18,11 @@ if m ==1  %decision on whether to run constant vs varying recovery
     n_h2 = zeros(n);
     for j= 1:n
         P_ITMperm = linspace(50,50)'; %ITM back pressure in kPa
-        V_loss = linspace(.3,.1)'; %Fuel cell voltage
+        V_loss = linspace(.21,.21)'; %Fuel cell voltage
         recovery = linspace(.99*(j/n),.99*(j/n))'; %Fixed value of recovery
         TIT = linspace(1200,1200)';
         Fuel = 1; % 0 for no suplemental fuel into combustor, 1 for fixed % recovery
-        Pr = linspace(15,15)'; % Compressor pressure ratio
+        Pr = linspace(3,6)'; % Compressor pressure ratio
         vectorLength = max([length(Pr), length(P_ITMperm),length(V_loss)]); %set length of vectors to correspond to given inputs
 
         TXNin = zeros(vectorLength,9);
@@ -34,12 +34,12 @@ if m ==1  %decision on whether to run constant vs varying recovery
         TXNin(:,9) = .5;
 
         if Fuel==1
-            [Efficiency(:,j),Eff_FC(:,j),Eff_GT(:,j),W_net(:,j),W_fc(:,j),W_gt(:,j),T_out(:,j),X8,N_out(:,j),V_fc,R_actual(:,j),recovery(:,j),FC_util(:,j),Qimbalance(:,j),E0(:,j),n_h2(:,j)] = hybrid_final(TXNin,Pr, P_ITMperm, V_loss,TIT,recovery);
+            [Efficiency(:,j),Eff_FC(:,j),Eff_GT(:,j),W_net(:,j),W_fc(:,j),W_gt(:,j),T_out(:,j),X8,N_out(:,j),V_fc,R_actual(:,j),recovery(:,j),FC_util(:,j),Qimbalance(:,j),E0(:,j),n_h2(:,j)] = hybrid_final_heatex(TXNin,Pr, P_ITMperm, V_loss,TIT,recovery);
         else
-            [Efficiency(:,j),Eff_FC(:,j),Eff_GT(:,j),W_net(:,j),W_fc(:,j),W_gt(:,j),T_out(:,j),X8,N_out(:,j),V_fc(:,j),R_actual(:,j),recovery(:,j),FC_util(:,j),Qimbalance(:,j),E0(:,j),n_h2(:,j)] = hybrid_final(TXNin, Pr, P_ITMperm, V_loss,TIT);
+            [Efficiency(:,j),Eff_FC(:,j),Eff_GT(:,j),W_net(:,j),W_fc(:,j),W_gt(:,j),T_out(:,j),X8,N_out(:,j),V_fc(:,j),R_actual(:,j),recovery(:,j),FC_util(:,j),Qimbalance(:,j),E0(:,j),n_h2(:,j)] = hybrid_final_heatex(TXNin, Pr, P_ITMperm, V_loss,TIT);
         end
     end
-    x = V_fc;
+    x = Pr;
     y = linspace(.0099,.99);
     z = Efficiency;
     ax = gca;
@@ -52,7 +52,7 @@ else %original model that outputs all vectors [100,1]
     recovery = linspace(.51,.51)'; %Fixed value of recovery
     TIT = linspace(1200,1200)';
     Fuel = 0; % 0 for no suplemental fuel into combustor, 1 for fixed % recovery
-    Pr = linspace(5,15)'; % Compressor pressure ratio
+    Pr = linspace(3,6)'; % Compressor pressure ratio
     vectorLength = max([length(Pr), length(P_ITMperm),length(V_loss)]); %set length of vectors to correspond to given inputs
 
     TXNin = zeros(vectorLength,9);
@@ -64,9 +64,9 @@ else %original model that outputs all vectors [100,1]
     TXNin(:,9) = .5;
 
     if Fuel==1
-        [Efficiency,Eff_FC,Eff_GT,W_net,W_fc,W_gt,T_out,X8,N_out,V_fc,R_actual,recovery,FC_util,Qimbalance,E0,n_h2,Wc2] = hybrid_final(TXNin,Pr, P_ITMperm, V_loss,TIT,recovery);
+        [Efficiency,Eff_FC,Eff_GT,W_net,W_fc,W_gt,T_out,X8,N_out,V_fc,R_actual,recovery,FC_util,Qimbalance,E0,n_h2] = hybrid_final_heatex(TXNin,Pr, P_ITMperm, V_loss,TIT,recovery);
     else
-        [Efficiency,Eff_FC,Eff_GT,W_net,W_fc,W_gt,T_out,X8,N_out,V_fc,R_actual,recovery,FC_util,Qimbalance,E0,n_h2,Wc2] = hybrid_final(TXNin, Pr, P_ITMperm, V_loss,TIT);
+        [Efficiency,Eff_FC,Eff_GT,W_net,W_fc,W_gt,T_out,X8,N_out,V_fc,R_actual,recovery,FC_util,Qimbalance,E0,n_h2] = hybrid_final_heatex(TXNin, Pr, P_ITMperm, V_loss,TIT);
     end
     figure(1)
     A = find(recovery>.99);
@@ -75,21 +75,14 @@ else %original model that outputs all vectors [100,1]
     end
     x = Pr;
     y = Efficiency;
-    line(x,y,'linewidth',3);
-%     x2 = P_ITMperm;
-%     y2 = Efficiency; 
+    %x2 = P_ITMperm;
+    %y2 = recovery;
     ax = gca;
-%     [hAx,hLine1,hLine2] = plotyy(P_ITMperm,Efficiency,P_ITMperm,Wc2);
-%     ax.XTickLabel = {20/50,40/50,60/50,80/50,100/50,120/50,140/50,160/50};
     set(gca,'FontSize',18)
-%     set(hLine1,'linewidth',3)
-%     set(hLine2,'linewidth',3)
+    %ax.XTickLabel = {'-3\pi','-2\pi','-\pi','0','\pi','2\pi','3\pi'};
+    line(x,y,'linewidth',3)
     xlabel('Pressure Ratio')
-%     ylabel(hAx(1),'System Efficiency') % left y-axis
-    ylabel('System Efficiency') % left y-axis
-%     line(x,y,'linewidth',3)
-    
-%     ylabel('Parasitic Compression Power')
+    ylabel('System Efficiency')
     %xlabel('Operating Voltage')
     %ylabel('Percent Oxygen Recovered')
     
