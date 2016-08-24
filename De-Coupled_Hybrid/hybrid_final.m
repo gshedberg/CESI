@@ -1,4 +1,4 @@
-function [Efficiency,Eff_FC,Eff_GT,W_net,W_fc,W_gt,T_out,X8,N_out,V_fc,R_actual,recovery,FC_util,Qimbalance,E0,n_h2,Wc2] = hybrid_final(varargin)
+function [Efficiency,Eff_FC,Eff_GT,W_net,W_fc,W_gt,T_out,X8,N_out,V_fc,R_actual,recovery,FC_util,Qimbalance,E0,n_h2,Wc2,Rt] = hybrid_final(varargin)
 TXNin = varargin{1}; %Temp, Composition, Flow in to system
 Pr = varargin{2};       %Pressure Ratio across turbomachinary
 P_ITMperm = varargin{3}; %Back pressure of OTM

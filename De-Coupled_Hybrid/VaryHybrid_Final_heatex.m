@@ -74,15 +74,15 @@ else %original model that outputs all vectors [100,1]
        recovery(A) = 1;
     end
     x = Pr;
-    y = Efficiency;
+    y = recovery;
     %x2 = P_ITMperm;
     %y2 = recovery;
     ax = gca;
-    set(gca,'FontSize',18)
+%     set(gca,'FontSize',18)
     %ax.XTickLabel = {'-3\pi','-2\pi','-\pi','0','\pi','2\pi','3\pi'};
-    line(x,y,'linewidth',3)
+    line(x,y)
     xlabel('Pressure Ratio')
-    ylabel('System Efficiency')
+    ylabel('Percent Oxygen Recovered')
     %xlabel('Operating Voltage')
     %ylabel('Percent Oxygen Recovered')
     

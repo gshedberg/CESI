@@ -47,8 +47,8 @@ if m ==1  %decision on whether to run constant vs varying recovery
     contour(x,y,z','showtext','on','linewidth',2)
     
 else %original model that outputs all vectors [100,1]
-    P_ITMperm = linspace(50,50)'; %ITM back pressure in kPa
-    V_loss = linspace(.21,.21)'; %Fuel cell voltage
+    P_ITMperm = linspace(150,15)'; %ITM back pressure in kPa
+    V_loss = linspace(.,.3)'; %Fuel cell voltage
     recovery = linspace(.51,.51)'; %Fixed value of recovery
     TIT = linspace(1200,1200)';
     Fuel = 0; % 0 for no suplemental fuel into combustor, 1 for fixed % recovery
@@ -75,11 +75,10 @@ else %original model that outputs all vectors [100,1]
     end
     ax = gca;
 %     set(gca,'Xtick',.4:.2:3);
-    x = linspace(2,.5)';
+    x = linspace(2,.4)';
     y = Efficiency;
-    line(x,y,'color','red');
-%     line(x,y);
-
+    line(x,y);
+    
 %     hold on
 %     x2 = V_fc;
 %     y2 = recovery; 
