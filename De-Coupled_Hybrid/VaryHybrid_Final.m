@@ -48,7 +48,7 @@ if m ==1  %decision on whether to run constant vs varying recovery
     
 else %original model that outputs all vectors [100,1]
     P_ITMperm = linspace(50,50)'; %ITM back pressure in kPa
-    V_loss = linspace(.21,.21)'; %Fuel cell voltage
+    V_loss = linspace(.3,.1)'; %Fuel cell voltage
     recovery = linspace(.51,.51)'; %Fixed value of recovery
     TIT = linspace(1200,1200)';
     Fuel = 0; % 0 for no suplemental fuel into combustor, 1 for fixed % recovery
@@ -74,28 +74,29 @@ else %original model that outputs all vectors [100,1]
        recovery(A) = 1;
     end
     ax = gca;
-%     set(gca,'Xtick',.4:.2:3);
-    x = linspace(2,.5)';
-    y = Efficiency;
-    line(x,y,'color','red');
-%     line(x,y);
-
-%     hold on
-%     x2 = V_fc;
-%     y2 = recovery; 
-  
+    set(gca,'FontSize',15)
+% %     set(gca,'Xtick',.4:.2:3);
+    x = V_fc;
+    y = recovery;
+    line(x,y,'linewidth',2);
+%     plot(x,y,'linewidth','3');
+% 
+% %     hold on
+%     x2 = P_ITMperm;
+%     y2 = R_actual; 
+%   
 %     [hAx,hLine1,hLine2] = plotyy(x,y,x2,y2);
-%     ax.XTickLabel = {};
-%     set(gca,'FontSize',18)
-%     set(hLine1,'linewidth',3)
-%     set(hLine2,'linewidth',3)
-    xlabel('Relative Size of System')
-%     ylabel(hAx(1),'System Efficiency') % left y-axis
-%     ylabel(hAx(2),'Power Ratio (FC/GT)') % left y-axis
+% %     ax.XTickLabel = {};
+% %     set(gca,'FontSize',18)
+% %     set(hLine1,'linewidth',3)
+% %     set(hLine2,'linewidth',3)
+    xlabel('Operating Voltage (V)')
+%     ylabel(hAx(1),'Theoretical Recovery') % left y-axis
+%     ylabel(hAx(2),'Actual Recovery') % left y-axis
 %     title('Power Ratio (FC/GT) vs Fuel Cell Voltage')
 %     line(x,y,'linewidth',3)
     
-    ylabel('System Efficiency')
+    ylabel('Percent Oxygen Recovered (%)')
     %xlabel('Operating Voltage')
     %ylabel('Percent Oxygen Recovered')
     
