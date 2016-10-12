@@ -112,7 +112,7 @@ end
 W_gt = Wt-Wc1;  %Gas turbine power minus parasitic compression%
 Eff_GT = (Wt-Wc1)./((N6.*LHVanode)); %Efficiency of Gas Turbine
 W_net = W_fc + W_gt - Wc2;  %Net power output of hybrid
-Cogen = 1; %Decide whether cogeneration of h2 is wanted
+Cogen = 0; %Decide whether cogeneration of h2 is wanted
 if Cogen == 0
     Efficiency = (W_net)./((FC_fuel+CombustFuel).*LHVfuel-Qimbalance); %Hybrid Efficiency without cogeneration
 else
