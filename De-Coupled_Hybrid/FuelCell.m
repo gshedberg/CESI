@@ -6,8 +6,8 @@ h = enthalpy(Tdesign);
 erxn2 = .6; % Water gas shift effectiveness of reaction
 erxn3 = 1; % Steam reformation of methane effectiveness of reaction
 hrxn1 = 2*h(:,5)-2*h(:,4)-h(:,7); %2H2 + O2 -->  2H2O
-hrxn2 = h(:,3)+h(:,4)-h(:,2)-h(:,5); %CO + H20 --> CO2 + H2 
-hrxn3 = 3*h(:,4)+h(:,2)-h(:,1)-h(:,5); %CH4+H2O --> CO + 3H2
+hrxn2 = h(:,3)+h(:,4)-h(:,2)-h(:,5); %CO + H20 --> CO2 + H2 %Water Gas Shift
+hrxn3 = 3*h(:,4)+h(:,2)-h(:,1)-h(:,5); %CH4+H2O --> CO + 3H2 
 
 I = 4*1000*F*(TXNoxidant(:,8).*TXNoxidant(:,9));  %SOFC current X # of Cells based on oxidant flow and 100% oxidant utilization
 [~, h_Oxidant] = enthalpy(TXNoxidant(:,1),TXNoxidant(:,2:8),TXNoxidant(:,9));

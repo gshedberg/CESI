@@ -11,8 +11,8 @@ else recovery = linspace(.4,.4)'; %Intial value of recovery
 end
 
 S2C = linspace(2,2,length(Pr))';
-TurbEff = linspace(.88,.88,length(Pr))';      %Turbine Efficiency
-CompEff = linspace(.8,.8,length(Pr))';      %Compressor Efficiency
+TurbEff = linspace(.90,.90,length(Pr))';      %Turbine Efficiency
+CompEff = linspace(.85,.85,length(Pr))';      %Compressor Efficiency
 LHVCO = 303000; %Lower Heating Value of CO
 LHVH2 = 240420; %Lower HEating Value of H2
 

@@ -18,7 +18,7 @@ if m ==1  %decision on whether to run constant vs varying recovery
     n_h2 = zeros(n);
     for j= 1:n
         P_ITMperm = linspace(50,50)'; %ITM back pressure in kPa
-        V_loss = linspace(.3,.1)'; %Fuel cell voltage
+        V_loss = linspace(.3,.12)'; %Fuel cell voltage
         recovery = linspace(.99*(j/n),.99*(j/n))'; %Fixed value of recovery
         TIT = linspace(1200,1200)';
         Fuel = 1; % 0 for no suplemental fuel into combustor, 1 for fixed % recovery
@@ -48,7 +48,7 @@ if m ==1  %decision on whether to run constant vs varying recovery
     
 else %original model that outputs all vectors [100,1]
     P_ITMperm = linspace(50,50)'; %ITM back pressure in kPa
-    V_loss = linspace(.3,.1)'; %Fuel cell voltage
+    V_loss = linspace(.21,.21)'; %Fuel cell voltage
     recovery = linspace(.51,.51)'; %Fixed value of recovery
     TIT = linspace(1200,1200)';
     Fuel = 0; % 0 for no suplemental fuel into combustor, 1 for fixed % recovery
@@ -78,7 +78,7 @@ else %original model that outputs all vectors [100,1]
 % %     set(gca,'Xtick',.4:.2:3);
     x = V_fc;
     y = recovery;
-    line(x,y,'linewidth',2);
+    line(x,y,'linewidth',3,'color','r');
 %     plot(x,y,'linewidth','3');
 % 
 % %     hold on
@@ -90,7 +90,7 @@ else %original model that outputs all vectors [100,1]
 % %     set(gca,'FontSize',18)
 % %     set(hLine1,'linewidth',3)
 % %     set(hLine2,'linewidth',3)
-    xlabel('Operating Voltage (V)')
+%     xlabel('Operating Voltage (V)')
 %     ylabel(hAx(1),'Theoretical Recovery') % left y-axis
 %     ylabel(hAx(2),'Actual Recovery') % left y-axis
 %     title('Power Ratio (FC/GT) vs Fuel Cell Voltage')
@@ -99,7 +99,10 @@ else %original model that outputs all vectors [100,1]
     ylabel('Percent Oxygen Recovered (%)')
     %xlabel('Operating Voltage')
     %ylabel('Percent Oxygen Recovered')
-    
+    ax.XTickLabel = {'.760','.780','.800','.820','.840','.860','.880','.900','.920'}; %Voltage
+%     ax.XTickLabel ={'.625','.651','.678','.707','.739','.774','.812','.853','.899'}; %Utilization
+    %ax.XTickLabel ={'.300','.278','.258','.238','.218','.198','.178','.158','.138'};%Current Density
+
 end
 
 
