@@ -10,7 +10,7 @@ end
 
 spec2 = fieldnames(Fuel);
 spec2 = spec2(~strcmp(spec2,'T'));
-spec = unique(spec,spec2);
+spec = unique([spec;spec2]);
 for i = 1:1:length(spec2)
     if ~isfield(NetIn,spec2{i})
         NetIn.(spec2{i}) = Fuel.(spec2{i});
@@ -55,14 +55,14 @@ end
 ReactMix.T =  zeros(length(Air.T),1)+1000;
 T_error = 100;
 while min(abs(T_error) > .001)
-   Hout = enthalpy(ReactMix);
-   Cp = SpecHeat(ReactMix);
+   Hout = enthalpy2(ReactMix);
+   Cp = SpecHeat2(ReactMix);
    T_error = (Hin-Q-Hout)./(Cp.*NetFlow(ReactMix));
    ReactMix.T = ReactMix.T+T_error;
 end
 
 if ~isempty(TIT)
     ReactMix.T = max(TIT,ReactMix.T);
-    Hout = enthalpy(ReactMix);
+    Hout = enthalpy2(ReactMix);
     Qextra = Hout - (Hin  - Q);
 end

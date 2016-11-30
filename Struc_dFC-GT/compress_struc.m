@@ -15,7 +15,9 @@ FlowS.T = T2s;
 H2s = enthalpy2(FlowS); %Isentropic Enthalpy change
 %% Actual Enthalpy Change
 H2 = H1 + 1/eff*(H2s-H1);
-T2 = Tin + 1/eff*(T2s-Tin);
+% H2 = (H2s-H1)./eff+H1; 
+% T2 = Tin + 1/eff*(T2s-Tin);
+T2 = 1000;
 T_error = Tin*0+ 100;
 %% Solve for Temp out
 while min(abs(T_error)) > .1

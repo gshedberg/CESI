@@ -1,4 +1,4 @@
-function [Out1,Out2] = enthalpy(varargin) % enthalpy (h) and sensible enthalpy(h_s), if species and flow are provided it returns H (total enthalpy(kW)) and H_s Sensible enthalpy (kW).
+function [Out1,Out2] = enthalpy2(varargin) % enthalpy (h) and sensible enthalpy(h_s), if species and flow are provided it returns H (total enthalpy(kW)) and H_s Sensible enthalpy (kW).
 % returns both total and sensible enthalpy in kJ/kmol, or in rate form kJ/s
 % Option 1: provide a vector of temperatures and it returns total and specific enthalpy at those temperatures for all species CH4, CO, CO2, H2, H2O, N2, O2, C, NO, OH, H
 % Option 2: provide a structure where __.T coresponds to temperature, ___.CH4 coresponds to the flow rate of methane ____.H2 to the flow rate of hydrogen...

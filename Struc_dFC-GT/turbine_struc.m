@@ -4,7 +4,7 @@ Ru = 8.314;
 Tin = Flow.T;
 Tavg = (Tin+Pr.^(1-1/1.4).*Tin)/2;
 Flow.T = Tavg;
-Cp = SpecHeat(Flow);
+Cp = SpecHeat2(Flow);
 gam = Cp./(Cp-Ru);
 Hin = enthalpy2(Flow);
 %% Isentropic Expansion

@@ -42,13 +42,13 @@ while abs(error)>1e-3
     H_298 = enthalpy2(298);
     X_CO2_L = e2*(1-r)/3;
     X_CO_L = 1 - X_CO2_L - X_H2(end) - X_H2O(end);
-    FlowOut.T = T;
-    FlowOut.H2 = X_H2(end)*3*Fuel.CH4/(1-r);
-    FlowOut.H2O = X_H2O(end)*3*Fuel.CH4/(1-r);
-    FlowOut.CO = X_CO_L*3*Fuel.CH4/(1-r);
-    FlowOut.CO2 = X_CO2_L*3*Fuel.CH4/(1-r);
-    Hout = enthalpy2(FlowOut);
-    h_out = Hout/NetFlow(FlowOut);
+    Flow.T = T;
+    Flow.H2 = X_H2(end)*3*Fuel.CH4/(1-r);
+    Flow.H2O = X_H2O(end)*3*Fuel.CH4/(1-r);
+    Flow.CO = X_CO_L*3*Fuel.CH4/(1-r);
+    Flow.CO2 = X_CO2_L*3*Fuel.CH4/(1-r);
+    Hout = enthalpy2(Flow);
+    h_out = Hout/NetFlow(Flow);
 %     NewFuel = (-Qgen-Oxidant.O2*h.O2)/(h_298.CH4 - 3*h_out - (e2*hrxn2+hrxn3)); %energy balance solved to determine fuel input
     NewFuel = (Oxidant.O2*H2.O2-Qgen)/(H_298.CH4 + 3*h_out - (e2*hrxn2+hrxn3)); %energy balance solved to determine fuel input
 
@@ -56,7 +56,12 @@ while abs(error)>1e-3
     Fuel.CH4 = .6*Fuel.CH4+.4*NewFuel;
 end
 FuelFlow = Fuel.CH4*Cells;
-FlowOut.CH4 = Fuel.CH4;
+FlowOut.T = T;
+FlowOut.H2 = Flow.H2*Cells;
+FlowOut.H2O = Flow.H2O*Cells;
+FlowOut.CO = Flow.CO*Cells;
+FlowOut.CO2 = Flow.CO2*Cells;
+FlowOut.CH4 = FuelFlow;
 P = (V*J)/1000*Cells;
 
 function r = solveRecirc(Oxidant,e2,Fuel,S2C,r)
