@@ -16,18 +16,19 @@ gam = Cp./(Cp-Ru);
 
 P2 = Pr.*Pin;
 % H1 = refproparray('H','T',Tavg,'P',Pin,'Air.ppf')/1000;
+H1 = enthalpy(T1,Xout,Nout);
 % S1 = refproparray('S','T',Tavg,'P',Pin,'Air.ppf')/1000;
-[H1,S1] = enthalpy_refprop(T1,Pin, Xout,Nout); %Initial Enthalpy
+% [H1,S1] = enthalpy_refprop(T1,Pin, Xout,Nout); %Initial Enthalpy
 
 T2s = Pr.^(1-(1./gam)).*T1; %Isnetropic Temperature Change
-[H2s,] = enthalpy_refprop(T2s,P2,Xout,Nout,S1*1000); %Isentropic Enthalpy change
+[H2s,] = enthalpy(T2s,Xout,Nout); %Isentropic Enthalpy change
 
 H2 = (H2s-H1)./nc+H1; %Actual Enthalpy change
 
 T_guess = T2s;
 T_error = T1*0+ 100;
 while min(abs(T_error)) > .1
-    [H_guess,~] = enthalpy_refprop(T_guess, Xout, Nout);
+    [H_guess,~] = enthalpy(T_guess, Xout, Nout);
     T_error = (H2 - H_guess)./(Cp.*Nout);
     T_guess  = T_guess + T_error; %Reiteration to calculate temperature out
 end

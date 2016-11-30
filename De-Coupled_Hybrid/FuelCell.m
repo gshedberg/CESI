@@ -10,8 +10,8 @@ hrxn2 = h(:,3)+h(:,4)-h(:,2)-h(:,5); %CO + H20 --> CO2 + H2 %Water Gas Shift
 hrxn3 = 3*h(:,4)+h(:,2)-h(:,1)-h(:,5); %CH4+H2O --> CO + 3H2 
 
 I = 4*1000*F*(TXNoxidant(:,8).*TXNoxidant(:,9));  %SOFC current X # of Cells based on oxidant flow and 100% oxidant utilization
-[~, h_Oxidant] = enthalpy(TXNoxidant(:,1),TXNoxidant(:,2:8),TXNoxidant(:,9));
-[H_oxidant,~] = enthalpy(TXNoxidant(:,1),TXNoxidant(:,2:8),TXNoxidant(:,9));
+[~, h_oxidant] = enthalpy(TXNoxidant(:,1),TXNoxidant(:,2:8),TXNoxidant(:,9));
+% [H_oxidant,~] = enthalpy(TXNoxidant(:,1),TXNoxidant(:,2:8),TXNoxidant(:,9));
 %Initial Assumption for reformation
 util = V_fc*0+.70;
 n_H2_theoretical = (I/(2*1000*F))./util;  %Hydrogen flow rate with 100% CH4 conversion
@@ -46,7 +46,7 @@ while max(abs(error)) > .001
         Xout(:,7) = (XanodeIn(:,7).*NanodeIn)./Nout;
 
         [~,hout] = enthalpy(Tdesign, Xout,Nout);
-        [Hout,~] = enthalpy(Tdesign, Xout,Nout);
+%         [Hout,~] = enthalpy(Tdesign, Xout,Nout);
         H2Orecirc = Xout(:,5).*Nout.*RecircPerc;
         H2Oneeded = (n_fuel.*(TXfuel(:,2)+TXfuel(:,3)+TXfuel(:,4)).*S2Cdesign)-(n_fuel.*TXfuel(:,6));
         
@@ -59,9 +59,9 @@ while max(abs(error)) > .001
         end
         
         [~,h_recirc] =  enthalpy(Tdesign, Xout, Nout.*RecircPerc);
-        [H_recirc,~] = enthalpy(Tdesign, Xout, Nout.*RecircPerc);
+%         [H_recirc,~] = enthalpy(Tdesign, Xout, Nout.*RecircPerc);
         [~,hfuel] = enthalpy(TXfuel(:,1), TXfuel(:,2:8),n_fuel);
-        [Hfuel,~] = enthalpy(TXfuel(:,1), TXfuel(:,2:8),n_fuel);
+%         [Hfuel,~] = enthalpy(TXfuel(:,1), TXfuel(:,2:8),n_fuel);
         
         TanodeIn = Tdesign; 
            [~,h_guess] = enthalpy(TanodeIn, XanodeIn, NanodeIn);
@@ -75,7 +75,7 @@ while max(abs(error)) > .001
     Qgen = -hrxn1.*R1- V_fc.*(I/1000);
 
     %energy balance: Fuel in+ oxidant in+recirculation in - reforming cooling+Qgen - flow out
-    Qimbalance = h_Oxidant+hfuel+h_recirc-Qreform+Qgen-hout;
+    Qimbalance = h_oxidant+hfuel+h_recirc-Qreform+Qgen-hout;
 %     Qimbalance = H_oxidant-Hfuel-H_recirc+Qreform+Qgen+Hout;
     CH4error = Qimbalance./hrxn3;
     CH4eqivelant = (I/(8000*F))./util;

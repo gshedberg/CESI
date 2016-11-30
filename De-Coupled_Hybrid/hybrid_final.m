@@ -1,25 +1,34 @@
 function [Efficiency,Eff_FC,Eff_GT,W_net,W_fc,W_gt,T_out,X8,N_out,V_fc,R_actual,recovery,FC_util,Qimbalance,E0,n_h2,Wc2,Rt] = hybrid_final(varargin)
-TXNin = varargin{1}; %Temp, Composition, Flow in to system
-Pr = varargin{2};       %Pressure Ratio across turbomachinary
-P_ITMperm = varargin{3}; %Back pressure of OTM
-V_loss =  varargin{4};      %Current Density across Fuel cell
-TIT = varargin{5};          %Ideal Turbine Inlet Temp
+%Temp, Composition, Flow in to system
+TXNin = varargin{1}; 
+%Pressure Ratio across turbomachinary
+Pr = varargin{2};  
+%Back pressure of OTM
+P_ITMperm = varargin{3}; 
+%Current Density across Fuel cell
+V_loss =  varargin{4}; 
+%Ideal Turbine Inlet Temp
+TIT = varargin{5};          
 
+%Intial value of % Oxygen Recovered
 if length(varargin)>5
     recovery = varargin{6};
-else recovery = linspace(.4,.4)'; %Intial value of recovery
+else recovery = linspace(.4,.4)'; 
 end
-
+%Designated Steam to Carbon Ratio for Steam-Methane Reformation
 S2C = linspace(2,2,length(Pr))';
-TurbEff = linspace(.90,.90,length(Pr))';      %Turbine Efficiency
-CompEff = linspace(.85,.85,length(Pr))';      %Compressor Efficiency
+%Turbine Efficiency
+TurbEff = linspace(.90,.90,length(Pr))';   
+%Compressor Efficiency
+CompEff = linspace(.85,.85,length(Pr))';      
 LHVCO = 303000; %Lower Heating Value of CO
 LHVH2 = 240420; %Lower HEating Value of H2
 
-T1 = TXNin(:,1);  %Initial conditions into hybrid
-X1 = TXNin(:,2:8);
-N1 = TXNin(:,9);
-Pin = 101;
+%Initial conditions into hybrid
+T1 = TXNin(:,1);    %Ambient Air Temp
+X1 = TXNin(:,2:8);  %Air in (.79 N2 .21 O2)
+N1 = TXNin(:,9);    %Flow Rate in kmol/sec
+Pin = 101;          %Ambient Air Temp
 TIT = zeros(length(T1),1)+TIT;
 
 vectorLength = max([length(Pr), length(P_ITMperm),length(V_loss)]);
@@ -27,10 +36,12 @@ LHVfuel = zeros(vectorLength,1)+8e5; %Lower heating value of CH4
 n_h2 = zeros(vectorLength,1);
 [Wc1, T2 ,X2,N2, P2] = compress([T1,X1,N1], CompEff, Pr, Pin); %Compressor Model
 
-if length(varargin)<6   %Condition to decide whether to run at constant recovery or adjust to meet TIT%
+%Condition to decide whether to run at constant recovery or adjust to meet TIT%
+if length(varargin)<6   
     n_h2 = 0;
     error = 1;
-    while max(abs(error))> .99% loop to solve for TIT by varying the recovery percentage of o2
+    % loop to solve for TIT by varying the recovery percentage of o2
+    while max(abs(error))> .99
         B = find(recovery>.99);
         if ~isempty(B)
            recovery(B) = 1;
@@ -41,7 +52,8 @@ if length(varargin)<6   %Condition to decide whether to run at constant recovery
         X3 = zeros(length(T1),7);
         X3(:,7) = 1;
         P3=P_ITMperm;
-        Pr2 = (Pr*Pin+25)./P3;      %Initialization for parasitic compressor to FC
+         %Initialization for parasitic compressor to FC
+        Pr2 = (Pr*Pin+25)./P3;     
         T4 = T3*0+300;
          X4 = X3;
         N4 = N3;
