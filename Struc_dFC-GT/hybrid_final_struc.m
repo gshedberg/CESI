@@ -2,7 +2,6 @@ function [Efficiency,Eff_FC,Eff_GT,W_net,W_fc,W_gt,Wc2,T_out,FlowOut,ReactMix,V,
 Tin = varargin{1}; %Temp, Composition, Flow in to system
 Pr = varargin{2};       %Pressure Ratio across turbomachinary
 P_ITMperm = varargin{3}; %Back pressure of OTM
-% V_loss =  varargin{4};      %Current Density across Fuel cell
 TIT = varargin{4};%Ideal Turbine Inlet Temp
 M_air = varargin{5}; %Mass Flow Rate of GT In
 Air.O2 = .21;
@@ -16,7 +15,6 @@ end
 S2C = linspace(2,2,length(Pr))';    %design steam to carbon ratio
 TurbEff = linspace(.88,.88,length(Pr))';      %Turbine Efficiency
 CompEff = linspace(.8,.8,length(Pr))';      %Compressor Efficiency
-LHVCO = 303000; %Lower Heating Value of CO
 LHVH2 = 240420; %Lower HEating Value of H2
 vectorLength = max([length(Pr), length(P_ITMperm),length(TIT)]);
 LHVfuel = zeros(vectorLength,1)+8e5; %Lower heating value of CH4
@@ -29,9 +27,11 @@ for i = 1:1:length(spec)
 end
 CompFlow.T = Tin;
 T1 = Tin;  %Initial conditions into hybrid
-Pin = ones(length(T1),1).*101;
+n = length(T1);
+Pin = ones(n,1).*101;
 [Wc1,T2,P2] = compress_struc(CompFlow,CompEff,Pr,Pin); %Compressor Model
 CompFlow.T = T2;
+<<<<<<< HEAD
 %% Decide whether to run at constant recovery or adjust to meet TIT
 if length(varargin)<6   
     error = 1;
@@ -49,55 +49,67 @@ if length(varargin)<6
         Pr2 = (Pr.*Pin+25)./P3;      %Initialization for parasitic compressor to FC
         CompFlow2 = O2Flow;
         [Wc2,T5,P5] = compress_struc(CompFlow2,CompEff,Pr2,P3);   %Compressor2 Model
+=======
+error = 100;
+while max(abs(error))> 1% loop to solve for TIT by varying the recovery percentage of o2
+    B = find(recovery>.99);
+    if ~isempty(B)
+       recovery(B) = 1;
+    end
+    %% OTM for Oxygen Separation
+    [NonPerm,O2Flow,Q_preheat,R_actual,Rt] = ITM_struc(CompFlow,P2,P_ITMperm,recovery); %ITM Model
+ %% Parasitic Compressor
+    Pr2 = (Pr.*Pin+25)./P_ITMperm;      %Initialization for parasitic compressor to FC
+    O2Flow.T = 320; %cooling back to near ambient conditions
+    [Wc2,T5,P5] = compress_struc(O2Flow,CompEff,Pr2,P_ITMperm);   %Compressor2 Model
+>>>>>>> 57b294bf624490b666d70051dda9ff897d5a65ff
  %% Initialization to Fuel Cell
-     T6 = 1023;
-     ASR = 2;        %Design Area Specific Resistance
-     eff_2 = .6;      %Effectiveness of WGS
-     Oxidant.O2 = O2Flow.O2;
      L = 10;     %Length of cells
      W = 10;     %Width of cells
-     n = 10;     %Nodes to analyze
-     Cells = 1e5;
-     i_array = zeros(n,length(Oxidant.O2));
-     recirc_vec = zeros(length(Oxidant.O2),1);
-     FC_Fuel_vec = zeros(length(Oxidant.O2),1);
-     V_vec = zeros(length(Oxidant.O2),1);
-     W_vec = zeros(length(Oxidant.O2),1);
+     nodes = 10;     %Nodes to analyze
+     F = 96485;
+     %%# of cells will determine current density and thus voltage !!
+     Cells = O2Flow.O2(1)/(0.5*L*W/(4000*F)); %assumes a current density of .5 A/cm^2
+     i_array = zeros(nodes,n);
+     recirc_vec = zeros(n,1);
+     FC_Fuel_vec = zeros(n,1);
+     V_vec = zeros(n,1);
+     W_vec = zeros(n,1);
+     Utilization = zeros(n,1);
      TFlowOut=[];
-     TotalFlow = zeros(length(T1),1);
-     TFlowOut.T = zeros(length(T1),1);
-     TFlowOut.H2 = zeros(length(T1),1);
-     TFlowOut.H2O = zeros(length(T1),1);
-     TFlowOut.CO = zeros(length(T1),1);
-     TFlowOut.CO2 = zeros(length(T1),1);
-     TFlowOut.CH4 = zeros(length(T1),1);
+     Q_HVanodeOut = zeros(n,1);
+     TFlowOut.T = zeros(n,1);
+     TFlowOut.H2 = zeros(n,1);
+     TFlowOut.H2O = zeros(n,1);
+     TFlowOut.CO = zeros(n,1);
+     TFlowOut.CO2 = zeros(n,1);
+     TFlowOut.CH4 = zeros(n,1);
      %% Fuel Cell Model
-     for k = 1:1:length(Oxidant.O2)
-         Supply.O2 = Oxidant.O2(k);
-         S2C2 = S2C(k);
-         Pr_FC = Pr(k);
-        [i,recirc,FC_Fuel,FlowOut,V,W_fc] = FuelCell_struc(T6,ASR,eff_2,S2C2,Supply,L,W,n,Cells,Pr_FC);
+     for k = 1:1:n
+         Supply.O2 = O2Flow.O2(k);
+        [i,recirc,FC_Fuel,FlowOut,V,W_fc,U] = FuelCell_struc(1023,.25,.6,S2C(k),Supply,L,W,nodes,Cells,Pr(k));
         i_array(:,k) = i;
         recirc_vec(k) = recirc;
         FC_Fuel_vec(k) = FC_Fuel;
         V_vec(k) = V;
         W_vec(k) = W_fc;
+        Utilization(k) = U;
         TFlowOut.T(k) = FlowOut.T;
         TFlowOut.H2(k) = FlowOut.H2;
         TFlowOut.H2O(k) = FlowOut.H2O;
         TFlowOut.CO(k) = FlowOut.CO;
         TFlowOut.CO2(k) = FlowOut.CO2;
         TFlowOut.CH4(k) = FlowOut.CH4;
+<<<<<<< HEAD
         NFlow = NetFlow(FlowOut);
         MFlow = MassFlow(FlowOut);
+=======
+        Q_HVanodeOut(k) = FlowOut.H2*240420 + FlowOut.CO*303000 + FlowOut.CH4*754080;%LHV of anode off products
+>>>>>>> 57b294bf624490b666d70051dda9ff897d5a65ff
      end
-     %% Initialize Combustor
-     LHVanode = zeros(length(T1),1)+(TFlowOut.H2./TotalFlow).*LHVH2+...
-         (TFlowOut.CO./TotalFlow).*LHVCO+...
-         (TFlowOut.CH4./TotalFlow).*LHVfuel;%LHV of anode off products
      %% Combustor Model
      [ReactMix, Qextra] = combust_struc(NonPerm,TFlowOut,Q_preheat,TIT);
-%         [T8,X8,N8,~] = combust(T7,X7,N7, Tfuel,X6,N6,Q_preheat,TIT); %No fuel combustor
+     if length(varargin)<6   %% Adjust recovery to meet TIT
         A = find(recovery>.99);
         if ~isempty(A)
             recovery(A) = 1;
@@ -110,6 +122,7 @@ if length(varargin)<6
             newrecov = -error./TIT;
             recovery = (recovery + newrecov);%Adjust recovery percentage to get TIT to 1200%
         end
+<<<<<<< HEAD
     end
 else
     %% Run at constant recovery
@@ -160,21 +173,23 @@ else
         TFlowOut.CO2(k) = FlowOut.CO2;
         TFlowOut.CH4(k) = FlowOut.CH4;
         TotalFlow(k) = NetFlow(FlowOut);
+=======
+     else %% Run at constant recovery
+         error = 0;
+>>>>>>> 57b294bf624490b666d70051dda9ff897d5a65ff
      end
-     %% Initialize Combustor
-     LHVanode = zeros(length(T1),1)+(TFlowOut.H2./TotalFlow).*LHVH2+...
-         (TFlowOut.CO./TotalFlow).*LHVCO+...
-         (TFlowOut.CH4./TotalFlow).*LHVfuel;%LHV of anode off products
-     %% Combustor Model
-     [ReactMix, Qextra] = combust_struc(NonPerm,TFlowOut,Q_preheat,TIT);
 end
 %% Turbine Model
+<<<<<<< HEAD
 Mt = MassFlow(ReactMix);
 [Wt,T_out] = turbine_struc(ReactMix,TurbEff, 1/Pr);
+=======
+[Wt,T_out] = turbine_struc(ReactMix,TurbEff, 1./Pr);
+>>>>>>> 57b294bf624490b666d70051dda9ff897d5a65ff
 %% Results
 W_gt = Wt-Wc1;  %Gas turbine power minus compression%
 Eff_FC = W_vec./(FC_Fuel_vec.*LHVfuel);
-Eff_GT = (Wt-Wc1)./((TotalFlow.*LHVanode)); %Efficiency of Gas Turbine
+Eff_GT = (Wt-Wc1)./Q_HVanodeOut; %Efficiency of Gas Turbine
 W_net = W_vec + W_gt - Wc2;  %Net power output of hybrid
 %% Decide whether cogeneration of h2 is wanted
 Cogen = 0; 
