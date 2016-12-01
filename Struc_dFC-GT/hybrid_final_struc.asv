@@ -88,8 +88,7 @@ if length(varargin)<6
         TFlowOut.CO(k) = FlowOut.CO;
         TFlowOut.CO2(k) = FlowOut.CO2;
         TFlowOut.CH4(k) = FlowOut.CH4;
-        NFlow = NetFlow(FlowOut);
-        MFlow = MassFlow(FlowOut);
+        TotalFlow(k) = NetFlow(FlowOut);
      end
      %% Initialize Combustor
      LHVanode = zeros(length(T1),1)+(TFlowOut.H2./TotalFlow).*LHVH2+...
@@ -115,6 +114,8 @@ else
     %% Run at constant recovery
  %% OTM for Oxygen Separation
         [NonPerm,O2Flow,Q_preheat,R_actual,Rt] = ITM_struc(CompFlow,P2,P_ITMperm,recovery); %ITM Model
+        Mp = MassFlow(NonPerm)
+        Mo = MassFlow(O2Flow)
         %% Parasitic Compressor
         P3=P_ITMperm;
         Pr2 = (Pr.*Pin+25)./P3;      %Initialization for parasitic compressor to FC
@@ -161,6 +162,7 @@ else
         TFlowOut.CH4(k) = FlowOut.CH4;
         TotalFlow(k) = NetFlow(FlowOut);
      end
+     Mfc = 
      %% Initialize Combustor
      LHVanode = zeros(length(T1),1)+(TFlowOut.H2./TotalFlow).*LHVH2+...
          (TFlowOut.CO./TotalFlow).*LHVCO+...

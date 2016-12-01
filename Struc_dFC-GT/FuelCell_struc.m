@@ -1,4 +1,4 @@
-function [i,r,FuelFlow,FlowOut,V,P] = FuelCell_struc(T,ASR,e2,S2C,Oxidant,L,W,n,Cells,Pr)
+function [i,r,MFuel,Flow,V,P] = FuelCell_struc(T,ASR,e2,S2C,Oxidant,L,W,n,Cells,Pr)
 Ru = 8.314;
 F = 96485; %Faraday constant C/mol
 Oxidant.O2 = Oxidant.O2./Cells;
@@ -55,13 +55,9 @@ while abs(error)>1e-3
     error = (Fuel.CH4-NewFuel)/Fuel.CH4; %change in fuel estimation on this iteration
     Fuel.CH4 = .6*Fuel.CH4+.4*NewFuel;
 end
-FuelFlow = Fuel.CH4*Cells;
-FlowOut.T = T;
-FlowOut.H2 = Flow.H2*Cells;
-FlowOut.H2O = Flow.H2O*Cells;
-FlowOut.CO = Flow.CO*Cells;
-FlowOut.CO2 = Flow.CO2*Cells;
-FlowOut.CH4 = FuelFlow;
+Flow.CH4 = Fuel.CH4;
+MFuel = MassFlow(Fuel)*Cells;
+MFlow = MassFlow(Flow)*Cells;
 P = (V*J)/1000*Cells;
 
 function r = solveRecirc(Oxidant,e2,Fuel,S2C,r)
