@@ -47,10 +47,10 @@ if m ==1  %decision on whether to run constant vs varying recovery
     contour(x,y,z','showtext','on','linewidth',2)
     
 else %original model that outputs all vectors [100,1]
-    P_ITMperm = linspace(50,50)'; %ITM back pressure in kPa
+    P_ITMperm = linspace(25,250)'; %ITM back pressure in kPa
     recovery = linspace(.51,.51)'; %Fixed value of recovery
     TIT = linspace(1200,1200)';
-    Mflow = linspace(15,15)'; %Mass Flow of GT
+    Mflow = linspace(15,16)'; %Mass Flow of GT
     Fuel = 1; % 0 for no suplemental fuel into combustor, 1 for fixed % recovery
     Pr = linspace(15,15)'; % Compressor pressure ratio
     vectorLength = max([length(Pr), length(P_ITMperm)]); %set length of vectors to correspond to given inputs

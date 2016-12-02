@@ -11,7 +11,7 @@ if length(varargin)>5
     recovery = varargin{6};
 else recovery = linspace(.4,.4)'; %Intial value of recovery
 end
-
+Cogen = 0; %Decide whether hydrogen will be generated
 S2C = linspace(2,2,length(Pr))';    %design steam to carbon ratio
 TurbEff = linspace(.88,.88,length(Pr))';      %Turbine Efficiency
 CompEff = linspace(.8,.8,length(Pr))';      %Compressor Efficiency
@@ -192,11 +192,10 @@ Eff_FC = W_vec./(FC_Fuel_vec.*LHVfuel);
 Eff_GT = (Wt-Wc1)./Q_HVanodeOut; %Efficiency of Gas Turbine
 W_net = W_vec + W_gt - Wc2;  %Net power output of hybrid
 %% Decide whether cogeneration of h2 is wanted
-Cogen = 0; 
 if Cogen == 0
-    Efficiency = (W_net)./((FC_Fuel_vec.*LHVfuel)-Qextra); %Hybrid Efficiency without cogeneration
+    Efficiency = (W_net)./((FC_Fuel_vec.*LHVfuel)+Qextra); %Hybrid Efficiency without cogeneration
 else
-    Efficiency = (W_net+(FlowOut.H2.*LHVH2))./((FC_Fuel_vec.*LHVfuel)-Qextra);%hybrid efficiency with cogeneration
+    Efficiency = (W_net+(FlowOut.H2.*LHVH2))./((FC_Fuel_vec.*LHVfuel)+Qextra);%hybrid efficiency with cogeneration
 end
 
 
