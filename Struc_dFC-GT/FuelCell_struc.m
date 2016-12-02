@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-function [i,r,MFuel,Flow,V,P] = FuelCell_struc(T,ASR,e2,S2C,Oxidant,L,W,n,Cells,Pr)
-=======
 function [i,r,FuelFlow,FlowOut,V,P,Utilization] = FuelCell_struc(T,ASR,e2,S2C,Oxidant,L,W,n,Cells,Pr)
->>>>>>> 57b294bf624490b666d70051dda9ff897d5a65ff
 Ru = 8.314;
 F = 96485; %Faraday constant C/mol
 Oxidant.O2 = Oxidant.O2./Cells;
@@ -64,11 +60,6 @@ while abs(error)>1e-3
     Fuel.CH4 = .6*Fuel.CH4+.4*NewFuel;
     
 end
-<<<<<<< HEAD
-Flow.CH4 = Fuel.CH4;
-MFuel = MassFlow(Fuel)*Cells;
-MFlow = MassFlow(Flow)*Cells;
-=======
 FuelFlow = Fuel.CH4*Cells;
 FlowOut.T = T;
 FlowOut.H2 = X_H2(end)*3*Fuel.CH4*Cells;
@@ -77,7 +68,6 @@ FlowOut.CO = X_CO_L*3*Fuel.CH4*Cells;
 FlowOut.CO2 = X_CO2_L*3*Fuel.CH4*Cells;
 FlowOut.CH4 = 0;
 Utilization = J/(2000*F)/(4*Fuel.CH4); %actual H2 use in kmol/s divided by ideal H2 production in kmol/s
->>>>>>> 57b294bf624490b666d70051dda9ff897d5a65ff
 P = (V*J)/1000*Cells;
 
 function r = solveRecirc(Oxidant,e2,Fuel,S2C,r)
@@ -85,5 +75,5 @@ error = 1;
 while abs(error)>1e-2
     S2Cguess = (2*Oxidant.O2-(1+e2)*Fuel.CH4)*r/(1-r)/Fuel.CH4;
     error = S2C - S2Cguess;
-    r = r + .1*error;
+    r = r + .05*error;
 end

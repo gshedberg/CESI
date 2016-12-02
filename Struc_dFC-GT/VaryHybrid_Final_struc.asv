@@ -52,16 +52,15 @@ else
     TIT = linspace(1200,1200)';
     %Mass Flow of GT
     Mflow = linspace(20,20)'; 
+    Fuel = 1; % 0 for no suplemental fuel into combustor, 1 for fixed % recovery
     % GT pressure ratio
     Pr = linspace(15,15)';
-    iDen = linspace(.25,1)';
     %Initialize
-    Fuel = 1; % 0 for no suplemental fuel into combustor, 1 for fixed % recovery
     vectorLength = max([length(Pr), length(P_ITMperm)]); %set length of vectors to correspond to given inputs
     Tin = zeros(vectorLength,1)+ 300;
-    if Fuel==1
+    if Fuel==0
        [Efficiency,Eff_FC,Eff_GT,W_net,Wfc_vec,W_gt,Wc2,T_out,TFlowOut,...
-           ReactMix,V_vec,Utilization,R_actual,Rt,recovery,Qextra,i_array,recirc_vec] = hybrid_final_struc(Tin,Pr,P_ITMperm,TIT,Mflow,recovery,iDen);
+           ReactMix,V_vec,R_actual,Rt,recovery,Qextra,i_array,recirc_vec] = hybrid_final_struc(Tin,Pr,P_ITMperm,TIT,Mflow,recovery);
     else
        [Efficiency,Eff_FC,Eff_GT,W_net,Wfc_vec,W_gt,Wc2,T_out,TFlowOut,...
            ReactMix,V_vec,Utilization,R_actual,Rt,recovery,Qextra,i_array,recirc_vec] = hybrid_final_struc(Tin,Pr,P_ITMperm,TIT,Mflow);

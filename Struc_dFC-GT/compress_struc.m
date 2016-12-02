@@ -12,8 +12,8 @@ FlowS = Flow;
 FlowS.T = Pr.^(1-(1./gam)).*Tin; %Isnetropic Temperature Change
 [~,Hs] = enthalpy2(FlowS); %Isentropic Enthalpy change
 %% Actual Enthalpy Change
-Hout = Hin + 1/eff*(Hs-Hin);
-Tout = Tin + 1/eff*(FlowS.T-Tin);
+Hout = Hin + 1./eff.*(Hs-Hin);
+Tout = Tin + 1./eff.*(FlowS.T-Tin);
 T_error = Tin*0+ 100;
 %% Solve for Temp out
 while min(abs(T_error)) > .1
