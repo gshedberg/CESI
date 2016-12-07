@@ -1,7 +1,8 @@
 function [ReactMix, Qextra] = combust_struc(Air,Fuel,Q,TIT)
 
 NetIn =[];
-Hin = enthalpy2(Air) + enthalpy2(Fuel);
+Hair = enthalpy2(Air);
+Hanode = enthalpy2(Fuel);
 spec = fieldnames(Air);
 spec = spec(~strcmp(spec,'T'));
 for i = 1:1:length(spec)
@@ -52,17 +53,18 @@ for i = 1:1:length(spec)
         ReactMix.(spec{i}) = NetIn.(spec{i});
     end
 end
-ReactMix.T =  zeros(length(Air.T),1)+1000;
-T_error = 100;
-while min(abs(T_error) > .001)
-   Hout = enthalpy2(ReactMix);
-   Cp = SpecHeat2(ReactMix);
-   T_error = (Hin-Q-Hout)./(Cp.*NetFlow(ReactMix));
-   ReactMix.T = ReactMix.T+T_error;
-end
-
+Qextra = zeros(length(TIT),1);
 if ~isempty(TIT)
-    ReactMix.T = max(TIT,ReactMix.T);
+    ReactMix.T=TIT;
     Hout = enthalpy2(ReactMix);
-    Qextra = Hout - (Hin  - Q);
+    Qextra = Hout - Hair  - (Hanode - Q); 
+else
+    ReactMix.T =  zeros(length(Air.T),1)+1000;
+    T_error = 100;
+    while min(abs(T_error) > .001)
+       Hout = enthalpy2(ReactMix);
+       Cp = SpecHeat2(ReactMix);
+       T_error = (Hair + (Hanode - Q) - Hout)./(Cp.*NetFlow(ReactMix));
+       ReactMix.T = ReactMix.T+T_error;
+    end
 end

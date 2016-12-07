@@ -1,52 +1,75 @@
 n = 100;%# of iterations
-m = 0;
+m = 1;
 %% Reiterate for large plots
 if m ==1  %decision on whether to run constant vs varying recovery
-    recovery = zeros(n);
-    Efficiency = zeros(n);
-    Eff_FC = zeros(n);
-    Eff_GT = zeros(n);
-    W_net = zeros(n);
-    Wfc_vec = zeros(n);
-    W_gt = zeros(n);
-    Wc2 = zeros(n);
-    T_out = zeros(n);       %Initialization of all output matrices
-    TFlowOut = zeros(n);
-    ReactMix = zeros(n);
-    V_vec = zeros(n);
-    R_actual = zeros(n);
-    Rt = zeros(n);
-    Qextra = zeros(n);
-    i_array = zeros(n);
-    recirc_vec = zeros(n);
-    for j= 1:n
+    recovery_m = zeros(n);
+    Efficiency_m = zeros(n);
+    Eff_FC_m = zeros(n);
+    Eff_GT_m = zeros(n);
+    W_net_m = zeros(n);
+    Wfc_vec_m = zeros(n);
+    W_gt_m = zeros(n);
+    Wc2_m = zeros(n);
+    T_out_m = zeros(n);       %Initialization of all output matrices
+%     TFlowOut = [];
+%     ReactMix = [];
+    V_vec_m = zeros(n);
+    R_actual_m = zeros(n);
+    Rt_m = zeros(n);
+    Qextra_m = zeros(n);
+    Utilization = zeros(n);
+%     i_array = [];
+    recirc_vec_m = zeros(n);
+    const_recovery = linspace(.05,.99);
+    for k= 1:n
         %ITM back pressure in kPa
         P_ITMperm = linspace(50,50)'; 
         %Fixed value of recovery
-        recovery = linspace(.99*(j/n),.99*(j/n))'; 
+        recovery = ones(100,1).*const_recovery(k);
         TIT = linspace(1200,1200)';
         %Mass Flow of GT
-        Mflow = linspace(15,15); 
+        Mflow = linspace(20,20)'; 
         Fuel = 1; % 0 for no suplemental fuel into combustor, 1 for fixed % recovery
         Pr = linspace(15,15)'; % Compressor pressure ratio
+        %Average Current Density for FC
+        iDen = linspace(.125,1.5)';
         vectorLength = max([length(Pr), length(P_ITMperm),length(recovery)]); %set length of vectors to correspond to given inputs
-        Tin = zeros(vectorLength,9)+ 300;
+        Tin = zeros(vectorLength,1)+ 300;
         if Fuel==1
-            [Efficiency(:,j),Eff_FC(:,j),Eff_GT(:,j),W_net(:,j),Wfc_vec(:,j),...
-                W_gt(:,j),Wc2(:,j),T_out(:,j),TFlowOut(:,j),ReactMix(:,j),...
-                V_vec(:,j),R_actual(:,j),Rt(:,j),recovery(:,j),Qextra(:,j),i_array(:,j),recirc_vec(:,j)]...
-                = hybrid_final_struc(Tin,Pr,P_ITMperm,TIT,Mflow,recovery);
+            [Eff,Eff_FC,Eff_GT,W_net,Wfc_vec,...
+                W_gt,Wc2,T_out,~,~,...
+                V_vec,Util,R_actual,Rt,recovery,Qextra,~,recirc_vec]...
+                = hybrid_final_struc(Tin,Pr,P_ITMperm,TIT,Mflow,iDen,recovery);
+            Efficiency_m(:,k) = Eff;
+            Eff_FC_m(:,k) = Eff_FC;
+            Eff_GT_m(:,k) = Eff_GT;
+            W_net_m(:,k) = W_net;
+            Wfc_vec_m(:,k) = Wfc_vec;
+            W_gt_m(:,k) = W_gt;
+            Wc2_m(:,k) = Wc2;
+            T_out_m(:,k) = T_out;  
+            V_vec_m(:,k) = V_vec;
+            R_actual_m(:,k) = R_actual;
+            Rt_m(:,k) = Rt;
+            Qextra_m(:,k) = Qextra;
+            Utilization(:,k) = Util;
+            recirc_vec_m(:,k) = recirc_vec;
+%             [Efficiency(:,k),Eff_FC(:,k),Eff_GT(:,k),W_net(:,k),Wfc_vec(:,k),...
+%                 W_gt(:,k),Wc2(:,k),T_out(:,k),~,~,...
+%                 V_vec(:,k),R_actual(:,k),Rt(:,k),recovery(:,k),Qextra(:,k),~,recirc_vec(:,k)]...
+%                 = hybrid_final_struc(Tin,Pr,P_ITMperm,TIT,Mflow,iDen,recovery);
         else
-            [Efficiency(:,j),Eff_FC(:,j),Eff_GT(:,j),W_net(:,j),Wfc_vec(:,j),...
-                W_gt(:,j),Wc2(:,j),T_out(:,j),TFlowOut(:,j),ReactMix(:,j),...
-                V_vec(:,j),R_actual(:,j),Rt(:,j),recovery(:,j),Qextra(:,j),i_array(:,j),recirc_vec(:,j)]...
-                = hybrid_final_struc(Tin,Pr,P_ITMperm,TIT,Mflow);            
+            [Eff(:,k),Eff_FC(:,k),Eff_GT(:,k),W_net(:,k),Wfc_vec(:,k),...
+                W_gt(:,k),Wc2(:,k),T_out(:,k),~,~,...
+                V_vec(:,k),R_actual(:,k),Rt(:,k),recovery(:,k),Qextra(:,k),~,recirc_vec(:,k)]...
+                = hybrid_final_struc(Tin,Pr,P_ITMperm,TIT,Mflow,iDen);            
         end
     end
+%     contour(V_vec,const_recovery
 %% Original model that outputs all vectors [100,1]
 else 
     %ITM back pressure in kPa
-    P_ITMperm = linspace(25,25)'; 
+    P_ITMperm = linspace(50,50)'; 
     %Fixed value of recovery
     recovery = linspace(.51,.51)'; 
     TIT = linspace(1200,1200)';
@@ -54,17 +77,20 @@ else
     Mflow = linspace(20,20)'; 
     % GT pressure ratio
     Pr = linspace(15,15)';
-    iDen = linspace(.25,1)';
+    %Average Current Density to Determine # of Cells in FC
+    iDen = linspace(.5,1.5)';
     %Initialize
-    Fuel = 1; % 0 for no suplemental fuel into combustor, 1 for fixed % recovery
+    Fuel = 0; % 0 for no suplemental fuel into combustor, 1 for fixed % recovery
     vectorLength = max([length(Pr), length(P_ITMperm)]); %set length of vectors to correspond to given inputs
     Tin = zeros(vectorLength,1)+ 300;
     if Fuel==1
-       [Efficiency,Eff_FC,Eff_GT,W_net,Wfc_vec,W_gt,Wc2,T_out,TFlowOut,...
-           ReactMix,V_vec,Utilization,R_actual,Rt,recovery,Qextra,i_array,recirc_vec] = hybrid_final_struc(Tin,Pr,P_ITMperm,TIT,Mflow,recovery,iDen);
+       [Eff,Eff_FC,Eff_GT,W_net,Wfc_vec,W_gt,Wc2,T_out,TFlowOut,...
+           ReactMix,V_vec,Utilization,R_actual,Rt,recovery,Qextra,i_array,recirc_vec]...
+           = hybrid_final_struc(Tin,Pr,P_ITMperm,TIT,Mflow,iDen,recovery);
     else
-       [Efficiency,Eff_FC,Eff_GT,W_net,Wfc_vec,W_gt,Wc2,T_out,TFlowOut,...
-           ReactMix,V_vec,Utilization,R_actual,Rt,recovery,Qextra,i_array,recirc_vec] = hybrid_final_struc(Tin,Pr,P_ITMperm,TIT,Mflow);
+       [Eff,Eff_FC,Eff_GT,W_net,Wfc_vec,W_gt,Wc2,T_out,TFlowOut,...
+           ReactMix,V_vec,Utilization,R_actual,Rt,recovery,Qextra,i_array,recirc_vec]...
+           = hybrid_final_struc(Tin,Pr,P_ITMperm,TIT,Mflow,iDen);
     end
     figure(1)
     A = find(recovery>.99);

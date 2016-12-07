@@ -26,19 +26,27 @@ while abs(error)>1e-3
     for k=1:1:n
         i_int(k) = sum(i(1:k))*(L/n); %integral of current density as a function of length
     end
+    H2flow_reformed = (3+e2)*Fuel.CH4;
+    H2used = 2*Oxidant.O2;
+    XH2end = (H2flow_reformed-H2used)/(3*Fuel.CH4);
+    
+    COflow_reformed = (1-e2)*Fuel.CH4;
+    XCOend = COflow_reformed/(3*Fuel.CH4);
     X_H2 = 1+e2/3-2*Oxidant.O2*r/(3*Fuel.CH4)-W*(1-r)/(6000*F*Fuel.CH4)*i_int;
     X_H2O = 2*Oxidant.O2*r/(3*Fuel.CH4) - (1+e2)/3 + W*(1-r)/(6000*F*Fuel.CH4)*i_int;
-    X_CO2_L = e2*(1-r)/3;
-    X_CO_L = 1 - X_CO2_L - X_H2(end) - X_H2O(end);
-    
+%     X_CO2_L = e2*(1-r)/3;
+%     X_CO_L = 1 - X_CO2_L - X_H2(end) - X_H2O(end);
+    X_CO_L = (1-e2)/3;
+    X_CO2_L = 1 - X_CO_L - X_H2(end) - X_H2O(end);
+%     E = E0 + Ru*T/(2*F)*log((1/Pr).*(X_H2./X_H2O.^.5));%Nernst Potential
     E = E0 + Ru*T/(2*F)*log(X_H2./X_H2O.*Pr.^.5);%Nernst Potential
     error2 = 1;
     count=0;
-    while abs(mean(error2))>(J*1e-4) || count<2
+    while abs(mean(error2))>(J*1e-4) || count < 2
         i = (E-V)/ASR;%new current distribution
         error2 = (sum(i)/n*L*W) - J;%error in total current
-        V = V + error2/(L*W)*ASR ;
-        count = count+1;
+        V = V + .5*(error2/(L*W)*ASR) ;
+        count = count + 1;
     end
     Qgen = -J/(4000*F)*hrxn1 - V*J/1000;%heat release from electrochemistry
     
