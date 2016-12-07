@@ -19,12 +19,12 @@ s = entropy2(T);
 E0 = -((h.H2O-s.H2O.*T)-(h.H2-s.H2.*T)-.5*(h.O2-s.O2.*T))/(2*F); %reference voltage
 %solve for distribution
 i = (ones(n,1)).*(J./(L.*W)); %Initial current distribution per cell
-i_int = zeros(n,1);
+J_int = zeros(n,1);
 error = 1;
 while abs(error)>1e-3
      r = solveRecirc(Oxidant,e2,Fuel,S2C,r);
     for k=1:1:n
-        i_int(k) = sum(i(1:k))*(L/n); %integral of current density as a function of length
+        J_int(k) = sum(i(1:k))*(W*L/n); %integral of current density as a function of length, total current thus far
     end
     H2flow_reformed = (3+e2)*Fuel.CH4;
     H2used = 2*Oxidant.O2;
@@ -32,8 +32,8 @@ while abs(error)>1e-3
     
     COflow_reformed = (1-e2)*Fuel.CH4;
     XCOend = COflow_reformed/(3*Fuel.CH4);
-    X_H2 = 1+e2/3-2*Oxidant.O2*r/(3*Fuel.CH4)-W*(1-r)/(6000*F*Fuel.CH4)*i_int;
-    X_H2O = 2*Oxidant.O2*r/(3*Fuel.CH4) - (1+e2)/3 + W*(1-r)/(6000*F*Fuel.CH4)*i_int;
+    X_H2 = 1+e2/3-2*Oxidant.O2*r/(3*Fuel.CH4)-(1-r)/(6000*F*Fuel.CH4)*J_int;
+    X_H2O = 2*Oxidant.O2*r/(3*Fuel.CH4) - (1+e2)/3 + (1-r)/(6000*F*Fuel.CH4)*J_int;
 %     X_CO2_L = e2*(1-r)/3;
 %     X_CO_L = 1 - X_CO2_L - X_H2(end) - X_H2O(end);
     X_CO_L = (1-e2)/3;
@@ -42,8 +42,11 @@ while abs(error)>1e-3
     E = E0 + Ru*T/(2*F)*log(X_H2./X_H2O.*Pr.^.5);%Nernst Potential
     error2 = 1;
     count=0;
-    while abs(mean(error2))>(J*1e-4) || count < 2
-        i = (E-V)/ASR;%new current distribution
+    if error == 1
+        V = mean(E - i*ASR);
+    end
+    while abs(mean(error2))>(J*1e-6) || count < 2
+        i = max(0,(E-V)/ASR);%new current distribution
         error2 = (sum(i)/n*L*W) - J;%error in total current
         V = V + .5*(error2/(L*W)*ASR) ;
         count = count + 1;
@@ -65,7 +68,7 @@ while abs(error)>1e-3
     NewFuel = Qgen/(e2*hrxn2+hrxn3); %energy balance heat generated = reformer cooling
     
     error = (Fuel.CH4-NewFuel)/Fuel.CH4; %change in fuel estimation on this iteration
-    Fuel.CH4 = .6*Fuel.CH4+.4*NewFuel;
+    Fuel.CH4 = .8*Fuel.CH4+.2*NewFuel;
     
 end
 FuelFlow = Fuel.CH4*Cells;
