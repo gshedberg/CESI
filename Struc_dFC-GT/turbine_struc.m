@@ -1,4 +1,4 @@
-function [Wt,Tout] = turbine_struc(Flow,EffTurb, Pr)
+function [Wt,Tout,Flow] = turbine_struc(Flow,EffTurb, Pr)
 %% Inlet Conditions
 Ru = 8.314;
 Tin = Flow.T;
@@ -23,3 +23,4 @@ while min(abs(T_error)) > .1      %Reiteration to calculate temperature out
 end
 %% Power Out
 Wt = Hin - Hout;       %Isentropic expansion power generation
+Flow.T = Tout;

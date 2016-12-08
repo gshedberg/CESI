@@ -1,4 +1,4 @@
-function [HotOut,ColdOut] = HX(ColdIn,HotIn,effectiveness)
+function [HotOut,ColdOut] = HX_struct(ColdIn,HotIn,effectiveness)
 [~,H_coldIn] = enthalpy2(ColdIn);
 ColdInIdeal = ColdIn;
 ColdInIdeal.T = HotIn.T;
@@ -19,8 +19,8 @@ HotOut = HotIn;
 HotOut.T = HotIn.T + 100;
 T_error = 1;
 while abs(T_error)>1e-3
-    [~,H_guess] = enthalpy(HotOut);
-    Cp = SpecHeat(HotOut);
+    [~,H_guess] = enthalpy2(HotOut);
+    Cp = SpecHeat2(HotOut);
     T_error = (H_guess-H_hotOut)./(Cp.*NetFlow(HotIn));
-    HotOut = HotOut - T_error;     
+    HotOut.T = HotOut.T - T_error;     
 end

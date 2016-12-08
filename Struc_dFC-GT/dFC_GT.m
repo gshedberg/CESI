@@ -1,4 +1,4 @@
-function [Efficiency,Eff_FC,Eff_GT,W_net,Wfc_vec,W_gt,Wc2,T_out,FCFlowOut,ReactMix,V_vec,Utilization,R_actual,Rt,recovery,Qextra,i_array,recirc_vec] = hybrid_final_struc(varargin)
+function [Efficiency,Eff_FC,Eff_GT,W_net,Wfc_vec,W_gt,Wc2,T_out,FCFlowOut,ReactMix,V_vec,Utilization,R_actual,Rt,recovery,Qextra,i_array,recirc_vec] = dFC_GT(varargin)
 Tin = varargin{1}; %Temp, Composition, Flow in to system
 Pr = varargin{2};       %Pressure Ratio across turbomachinary
 P_ITMperm = varargin{3}; %Back pressure of OTM
@@ -104,7 +104,7 @@ while max(abs(error))> 1e-2% loop to solve for TIT by varying the recovery perce
      end
 end
 %% Turbine Model
-[Wt,T_out] = turbine_struc(ReactMix,TurbEff, 1./Pr);
+[Wt,T_out,TurbFlow] = turbine_struc(ReactMix,TurbEff, 1./Pr);
 %% Results
 W_gt = Wt-Wc1;  %Gas turbine power minus compression%
 Eff_FC = Wfc_vec./(FC_Fuel_vec.*LHVfuel);
