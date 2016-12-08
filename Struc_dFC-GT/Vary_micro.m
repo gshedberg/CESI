@@ -69,12 +69,12 @@ if m ==0  %decision on whether to run constant vs varying recovery
 %% Original model that outputs all vectors [100,1]
 else 
     %ITM back pressure in kPa
-    P_ITMperm = linspace(25,25)'; 
+    P_ITMperm = linspace(50,50)'; 
     %Fixed value of recovery
     recovery = linspace(.51,.51)'; 
     TIT = linspace(1200,1200)';
     %Mass Flow of GT
-    Mflow = linspace(8,8)'; 
+    Mflow = linspace(6,6)'; 
     % GT pressure ratio
     Pr = linspace(3,6)';
     %Average Current Density to Determine # of Cells in FC
