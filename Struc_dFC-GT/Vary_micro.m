@@ -76,7 +76,7 @@ else
     %Mass Flow of GT
     Mflow = linspace(6,6)'; 
     % GT pressure ratio
-    Pr = linspace(3,6)';
+    Pr = linspace(5,5)';
     %Average Current Density to Determine # of Cells in FC
     iDen = linspace(.5,.5)';
     %Initialize

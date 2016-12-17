@@ -65,6 +65,15 @@ if m ==0  %decision on whether to run constant vs varying recovery
                 = dFC_GT(Tin,Pr,P_ITMperm,TIT,Mflow,iDen);            
         end
     end
+    ax = gca;
+    set(gca,'FontSize',15)
+    x = V_vec;
+    y = const_recovery;
+    z = Efficiency_m';
+    [C,h] = contour(x,y,z,'linewidth',2);
+    set(gca,'FontSize',15)
+    clabel (C,h,'FontSize',40);
+%     ax.XTickLabel = {'0.76','0.78','0.80','0.82','0.84','0.86','0.88','.90','.92','.94','.96','.98'}; %Voltage
 %     contour(V_vec,const_recovery
 %% Original model that outputs all vectors [100,1]
 else 
@@ -76,20 +85,20 @@ else
     %Mass Flow of GT
     Mflow = linspace(40,40)'; 
     % GT pressure ratio
-    Pr = linspace(5,25)';
+    Pr = linspace(15,15)';
     %Average Current Density to Determine # of Cells in FC
-    iDen = linspace(.6,.6)';
+    iDen = linspace(.105,1.5)';
     %Initialize
     Fuel = 0; % 0 for no suplemental fuel into combustor, 1 for fixed % recovery
     vectorLength = max([length(Pr), length(P_ITMperm)]); %set length of vectors to correspond to given inputs
     Tin = zeros(vectorLength,1)+ 300;
     if Fuel==1
        [Eff,Eff_FC,Eff_GT,W_net,Wfc_vec,W_gt,Wc2,T_out,TFlowOut,...
-           ReactMix,V_vec,Utilization,R_actual,Rt,recovery,Qextra,i_array,recirc_vec]...
+           ReactMix,V_vec,Utilization,R_actual,Rt,recovery,Qextra,i_array,recirc_vec,nO2]...
            = dFC_GT(Tin,Pr,P_ITMperm,TIT,Mflow,iDen,recovery);
     else
        [Eff,Eff_FC,Eff_GT,W_net,Wfc_vec,W_gt,Wc2,T_out,TFlowOut,...
-           ReactMix,V_vec,Utilization,R_actual,Rt,recovery,Qextra,i_array,recirc_vec]...
+           ReactMix,V_vec,Utilization,R_actual,Rt,recovery,Qextra,i_array,recirc_vec,nO2]...
            = dFC_GT(Tin,Pr,P_ITMperm,TIT,Mflow,iDen);
     end
     figure(1)
@@ -105,8 +114,8 @@ else
     line(x,y,'linewidth',3,'color','r')
     ylabel('Percent Oxygen Recovered (%)')
     xlabel('Operating Voltage')
-%     ax.XTickLabel = {'.760','.780','.800','.820','.840','.860','.880','.900','.920'}; %Voltage
-%   ax.XTickLabel ={'.625','.651','.678','.707','.739','.774','.812','.853','.899'}; %Utilization
+%   ax.XTickLabel = {'.760','.780','.800','.820','.840','.860','.880','.900','.920'}; %Voltage
+%   ax.XTickLabel ={'1.5','1.25','1','.75','.5','.25','0'}; %Current Density
 %   ax.XTickLabel ={'.300','.278','.258','.238','.218','.198','.178','.158','.138'};%Current Density
 end
 

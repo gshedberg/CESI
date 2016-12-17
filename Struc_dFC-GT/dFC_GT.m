@@ -1,4 +1,4 @@
-function [Efficiency,Eff_FC,Eff_GT,W_net,Wfc_vec,W_gt,Wc2,T_out,FCFlowOut,ReactMix,V_vec,Utilization,R_actual,Rt,recovery,Qextra,i_array,recirc_vec] = dFC_GT(varargin)
+function [Efficiency,Eff_FC,Eff_GT,W_net,Wfc_vec,W_gt,Wc2,T_out,FCFlowOut,ReactMix,V_vec,Utilization,R_actual,Rt,recovery,Qextra,i_array,recirc_vec,nO2] = dFC_GT(varargin)
 Tin = varargin{1}; %Temp, Composition, Flow in to system
 Pr = varargin{2};       %Pressure Ratio across turbomachinary
 P_ITMperm = varargin{3}; %Back pressure of OTM
@@ -35,7 +35,7 @@ Pin = ones(n,1).*101;
 [Wc1,T2,P2] = compress_struc(CompFlow,CompEff,Pr,Pin); %Compressor Model
 CompFlow.T = T2;
 error = 100;
-while max(abs(error))> 1e-2% loop to solve for TIT by varying the recovery percentage of o2
+while max(abs(error))> 1e-4% loop to solve for TIT by varying the recovery percentage of o2
     B = find(recovery>.99);
     if ~isempty(B)
        recovery(B) = 1;
@@ -106,6 +106,7 @@ end
 %% Turbine Model
 [Wt,T_out,TurbFlow] = turbine_struc(ReactMix,TurbEff, 1./Pr);
 %% Results
+nO2 = O2Flow.O2;
 W_gt = Wt-Wc1;  %Gas turbine power minus compression%
 Eff_FC = Wfc_vec./(FC_Fuel_vec.*LHVfuel);
 Eff_GT = (Wt-Wc1)./(Q_HVanodeOut + combustorCH4.*LHVfuel - H2co_produced.*LHVH2); %Efficiency of Gas Turbine
