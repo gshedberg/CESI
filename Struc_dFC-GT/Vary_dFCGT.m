@@ -1,5 +1,5 @@
 n = 100;%# of iterations
-m = 1;
+m = 0;
 %% Reiterate for large plots
 if m ==0  %decision on whether to run constant vs varying recovery
     recovery_m = zeros(n);
@@ -39,7 +39,7 @@ if m ==0  %decision on whether to run constant vs varying recovery
             [Eff,Eff_FC,Eff_GT,W_net,Wfc_vec,...
                 W_gt,Wc2,T_out,~,~,...
                 V_vec,Util,R_actual,Rt,recovery,Qextra,~,recirc_vec]...
-                = dFC_GT(Tin,Pr,P_ITMperm,TIT,Mflow,iDen,recovery);
+                = dFC_GT(Tin,Pr,P_ITMperm,TIT,Mflow,iDen,recovery,nO2);
             Efficiency_m(:,k) = Eff;
             Eff_FC_m(:,k) = Eff_FC;
             Eff_GT_m(:,k) = Eff_GT;
@@ -54,6 +54,7 @@ if m ==0  %decision on whether to run constant vs varying recovery
             Qextra_m(:,k) = Qextra;
             Utilization(:,k) = Util;
             recirc_vec_m(:,k) = recirc_vec;
+            nO2_m(:,k) = nO2;
 %             [Efficiency(:,k),Eff_FC(:,k),Eff_GT(:,k),W_net(:,k),Wfc_vec(:,k),...
 %                 W_gt(:,k),Wc2(:,k),T_out(:,k),~,~,...
 %                 V_vec(:,k),R_actual(:,k),Rt(:,k),recovery(:,k),Qextra(:,k),~,recirc_vec(:,k)]...
@@ -71,8 +72,10 @@ if m ==0  %decision on whether to run constant vs varying recovery
     y = const_recovery;
     z = Efficiency_m';
     [C,h] = contour(x,y,z,'linewidth',2);
-    set(gca,'FontSize',15)
-    clabel (C,h,'FontSize',40);
+    set(gca,'FontSize',20)
+    clabel (C,h,'FontSize',20);
+    hold on
+    plot(V_vec,const_recovery,'linewidth',2,'linestyle',':')
 %     ax.XTickLabel = {'0.76','0.78','0.80','0.82','0.84','0.86','0.88','.90','.92','.94','.96','.98'}; %Voltage
 %     contour(V_vec,const_recovery
 %% Original model that outputs all vectors [100,1]
