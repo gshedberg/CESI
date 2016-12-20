@@ -22,22 +22,17 @@ i = (ones(n,1)).*(J./(L.*W)); %Initial current distribution per cell
 J_int = zeros(n,1);
 error = 1;
 while abs(error)>1e-3
-     r = solveRecirc(Oxidant,e2,Fuel,S2C,r);
+    r = S2C/((.5*S2C-1)*(1+e2)+2*Oxidant.O2/Fuel.CH4);
     for k=1:1:n
         J_int(k) = sum(i(1:k))*(W*L/n); %integral of current density as a function of length, total current thus far
     end
-    H2flow_reformed = (3+e2)*Fuel.CH4;
-    H2used = 2*Oxidant.O2;
-    XH2end = (H2flow_reformed-H2used)/(3*Fuel.CH4);
-    
-    COflow_reformed = (1-e2)*Fuel.CH4;
-    XCOend = COflow_reformed/(3*Fuel.CH4);
+
     X_H2 = 1+e2/3-2*Oxidant.O2*r/(3*Fuel.CH4)-(1-r)/(6000*F*Fuel.CH4)*J_int;
     X_H2O = 2*Oxidant.O2*r/(3*Fuel.CH4) - (1+e2)/3 + (1-r)/(6000*F*Fuel.CH4)*J_int;
-%     X_CO2_L = e2*(1-r)/3;
-%     X_CO_L = 1 - X_CO2_L - X_H2(end) - X_H2O(end);
     X_CO_L = (1-e2)/3;
     X_CO2_L = 1 - X_CO_L - X_H2(end) - X_H2O(end);
+    SteamRatio = X_H2O(end)*3*Fuel.CH4*r/(1-r)/(Fuel.CH4+0.5*X_CO_L*3*Fuel.CH4*r/(1-r));
+    
 %     E = E0 + Ru*T/(2*F)*log((1/Pr).*(X_H2./X_H2O.^.5));%Nernst Potential
     E = E0 + Ru*T/(2*F)*log(X_H2./X_H2O.*Pr.^.5);%Nernst Potential
     error2 = 1;
@@ -52,19 +47,7 @@ while abs(error)>1e-3
         count = count + 1;
     end
     Qgen = -J/(4000*F)*hrxn1 - V*J/1000;%heat release from electrochemistry
-    
-    
-%     Flow.T = T;
-%     Flow.H2 = X_H2(end)*3*Fuel.CH4/(1-r);
-%     Flow.H2O = X_H2O(end)*3*Fuel.CH4/(1-r);
-%     Flow.CO = X_CO_L*3*Fuel.CH4/(1-r);
-%     Flow.CO2 = X_CO2_L*3*Fuel.CH4/(1-r);
-%     H_298 = enthalpy2(298);
-%     Hout = enthalpy2(Flow);
-%     h_out = Hout/NetFlow(Flow);
-%     NewFuel = (-Qgen-Oxidant.O2*h.O2)/(H_298.CH4 - 3*h_out - (e2*hrxn2+hrxn3)); %energy balance solved to determine fuel input
-%     NewFuel = (V*J/1000-enthalpy(Oxidant))/(H_298.CH4 - 3*h_out ); %energy balance solved to determine fuel input
-%     NewFuel = (enthalpy(Oxidant)-Qgen)/(H_298.CH4 + 3*h_out - (e2*hrxn2+hrxn3)); %energy balance solved to determine fuel input
+
     NewFuel = Qgen/(e2*hrxn2+hrxn3); %energy balance heat generated = reformer cooling
     
     error = (Fuel.CH4-NewFuel)/Fuel.CH4; %change in fuel estimation on this iteration
@@ -80,11 +63,3 @@ FlowOut.CO2 = X_CO2_L*3*Fuel.CH4*Cells;
 FlowOut.CH4 = 0;
 Utilization = J/(2000*F)/(4*Fuel.CH4); %actual H2 use in kmol/s divided by ideal H2 production in kmol/s
 P = (V*J)/1000*Cells;
-
-function r = solveRecirc(Oxidant,e2,Fuel,S2C,r)
-error = 1;
-while abs(error)>1e-2
-    S2Cguess = (2*Oxidant.O2-(1+e2)*Fuel.CH4)*r/(1-r)/Fuel.CH4;
-    error = S2C - S2Cguess;
-    r = r + .05*error;
-end
