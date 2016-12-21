@@ -1,5 +1,5 @@
 n = 100;%# of iterations
-m = 0;
+m = 1;
 %% Reiterate for large plots
 if m ==0  %decision on whether to run constant vs varying recovery
     recovery_m = zeros(n);
