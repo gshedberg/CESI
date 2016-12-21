@@ -52,8 +52,7 @@ while abs(error)>1e-3
         count = count + 1;
     end
     Qgen = -J/(4000*F)*hrxn1 - V*J/1000;%heat release from electrochemistry
-    
-    
+    SteamRatio = X_H2O(end)*3*Fuel.CH4*r/(1-r)/(Fuel.CH4+0.5*X_CO_L*3*Fuel.CH4*r/(1-r));
 %     Flow.T = T;
 %     Flow.H2 = X_H2(end)*3*Fuel.CH4/(1-r);
 %     Flow.H2O = X_H2O(end)*3*Fuel.CH4/(1-r);
@@ -84,7 +83,9 @@ P = (V*J)/1000*Cells;
 function r = solveRecirc(Oxidant,e2,Fuel,S2C,r)
 error = 1;
 while abs(error)>1e-2
-    S2Cguess = (2*Oxidant.O2-(1+e2)*Fuel.CH4)*r/(1-r)/Fuel.CH4;
+    S2Cguess1 = (2*Oxidant.O2-(1+e2)*Fuel.CH4)*r/(1-r)/Fuel.CH4;
+    S2Cguess=r.*((.5*S2Cguess1-1)*(1+e2)+2*Oxidant.O2/Fuel.CH4);
     error = S2C - S2Cguess;
     r = r + .05*error;
+    
 end
