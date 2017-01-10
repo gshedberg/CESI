@@ -62,14 +62,3 @@ FlowOut.CO2 = X_CO2_L*3*Fuel.CH4*Cells;
 FlowOut.CH4 = 0;
 Utilization = J/(2000*F)/(4*Fuel.CH4); %actual H2 use in kmol/s divided by ideal H2 production in kmol/s
 P = (V*J)/1000*Cells;
-
-function r = solveRecirc(Oxidant,e2,Fuel,S2C,r)
-error = 1;
-while abs(error)>1e-2
-    S2Cguess1 = (2*Oxidant.O2-(1+e2)*Fuel.CH4)*r/(1-r)/Fuel.CH4;
-    S2Cguess=r.*((.5*S2Cguess1-1)*(1+e2)+2*Oxidant.O2/Fuel.CH4);
-    error = S2C - S2Cguess;
-    r = r + .05*error;
-    
-end
->>>>>>> origin/master
