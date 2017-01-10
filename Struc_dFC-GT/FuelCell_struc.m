@@ -61,9 +61,6 @@ FlowOut.CO = X_CO_L*3*Fuel.CH4*Cells;
 FlowOut.CO2 = X_CO2_L*3*Fuel.CH4*Cells;
 FlowOut.CH4 = 0;
 Utilization = J/(2000*F)/(4*Fuel.CH4); %actual H2 use in kmol/s divided by ideal H2 production in kmol/s
-<<<<<<< HEAD
-P = (V*J)/1000*Cells;
-=======
 P = (V*J)/1000*Cells;
 
 function r = solveRecirc(Oxidant,e2,Fuel,S2C,r)
