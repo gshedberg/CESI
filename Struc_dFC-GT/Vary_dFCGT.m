@@ -38,7 +38,7 @@ if m ==0  %decision on whether to run constant vs varying recovery
         if Fuel==1
             [Eff,Eff_FC,Eff_GT,W_net,Wfc_vec,...
                 W_gt,Wc2,T_out,~,~,...
-                V_vec,Util,R_actual,Rt,recovery,Qextra,~,recirc_vec]...
+                V_vec,Util,R_actual,Rt,recovery,Qextra,~,recirc_vec,nO2]...
                 = dFC_GT(Tin,Pr,P_ITMperm,TIT,Mflow,iDen,recovery);
             Efficiency_m(:,k) = Eff;
             Eff_FC_m(:,k) = Eff_FC;
@@ -54,6 +54,7 @@ if m ==0  %decision on whether to run constant vs varying recovery
             Qextra_m(:,k) = Qextra;
             Utilization(:,k) = Util;
             recirc_vec_m(:,k) = recirc_vec;
+            nO2_m(:,k) = nO2
 %             [Efficiency(:,k),Eff_FC(:,k),Eff_GT(:,k),W_net(:,k),Wfc_vec(:,k),...
 %                 W_gt(:,k),Wc2(:,k),T_out(:,k),~,~,...
 %                 V_vec(:,k),R_actual(:,k),Rt(:,k),recovery(:,k),Qextra(:,k),~,recirc_vec(:,k)]...
@@ -83,7 +84,7 @@ else
     recovery = linspace(.51,.51)'; 
     TIT = linspace(1200,1200)';
     %Mass Flow of GT
-    Mflow = linspace(40,40)'; 
+    Mflow = linspace(20,20)'; 
     % GT pressure ratio
     Pr = linspace(15,15)';
     %Average Current Density to Determine # of Cells in FC

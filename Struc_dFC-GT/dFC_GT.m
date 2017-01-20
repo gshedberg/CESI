@@ -69,7 +69,9 @@ while max(abs(error))> 1e-4% loop to solve for TIT by varying the recovery perce
      for k = 1:1:n
         Supply.O2 = O2Flow.O2(k);
         %%# of cells will determine current density and thus voltage !!
+%         Cells = .1231./(iDen(k)*L*W/(4000*F));
         Cells = O2Flow.O2(k)./(iDen(k)*L*W/(4000*F));
+%         Cells = [924916.986173999];
         Cells_vec(k,:) = Cells;
         [i,recirc,FC_Fuel,FlowOut,V,W_fc,U] = FuelCell_struc(1023,.25,.6,S2C(k),Supply,L,W,nodes,Cells,Pr(k));
         i_array(:,k) = i;
