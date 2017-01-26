@@ -19,8 +19,7 @@ E0 = -((h.H2O-s.H2O.*T)-(h.H2-s.H2.*T)-.5*(h.O2-s.O2.*T))/(2*F); %reference volt
 %solve for distribution
 i = (ones(n,1)).*(J./(L.*W)); %Initial current distribution per cell
 J_int = zeros(n,1);
-
-r = solveRecirc(J,e2,Fuel,S2C,r);
+r = S2C/((.5*S2C-1)*(1+e2)+J/(2000*F)/Fuel.CH4);
 for k=1:1:n
     J_int(k) = sum(i(1:k))*(W*L/n); %integral of current density as a function of length, total current thus far
 end
@@ -32,8 +31,8 @@ COflow_reformed = (1-e2)*Fuel.CH4;
 XCOend = COflow_reformed/(3*Fuel.CH4);
 X_H2 = 1+e2/3-J/(2000*F)*r/(3*Fuel.CH4)-(1-r)/(6000*F*Fuel.CH4)*J_int;
 X_H2O = J/(2000*F)*r/(3*Fuel.CH4) - (1+e2)/3 + (1-r)/(6000*F*Fuel.CH4)*J_int;
-X_CO2_L = e2*(1-r)/3;
-X_CO_L = 1 - X_CO2_L - X_H2(end) - X_H2O(end);
+% X_CO2_L = e2*(1-r)/3;
+% X_CO_L = 1 - X_CO2_L - X_H2(end) - X_H2O(end);
 X_CO_L = (1-e2)/3;
 X_CO2_L = 1 - X_CO_L - X_H2(end) - X_H2O(end);
 % E = E0 + Ru*T/(2*F)*log((1/Pr).*(X_H2./X_H2O.*XO2.^.5));%Nernst Potential
@@ -47,14 +46,4 @@ while abs(mean(error2))>(J*1e-6) || count < 2
     error2 = (sum(i)/n*L*W) - J;%error in total current
     V = V + .5*(error2/(L*W)*ASR) ;
     count = count + 1;
-end
-
-
-function r = solveRecirc(J,e2,Fuel,S2C,r)
-F = 96485;
-error = 1;
-while abs(error)>1e-2
-    S2Cguess = (J/(2000*F)-(1+e2)*Fuel.CH4)*r/(1-r)/Fuel.CH4;
-    error = S2C - S2Cguess;
-    r = r + .05*error;
 end
