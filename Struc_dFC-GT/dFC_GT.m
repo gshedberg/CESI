@@ -1,4 +1,4 @@
-function [Efficiency,Eff_FC,Eff_GT,W_net,Wfc_vec,W_gt,Wc2,T_out,FCFlowOut,ReactMix,V_vec,Utilization,R_actual,Rt,recovery,Qextra,i_array,recirc_vec,nO2] = dFC_GT(varargin)
+function [Efficiency,Eff_FC,Eff_GT,W_net,Wfc_vec,W_gt,Wc2,T_out,FCFlowOut,FC_Fuel_vec,combustorCH4,ReactMix,V_vec,Utilization,R_actual,Rt,recovery,Qextra,i_array,recirc_vec,nO2] = dFC_GT(varargin)
 Tin = varargin{1}; %Temp, Composition, Flow in to system
 Pr = varargin{2};       %Pressure Ratio across turbomachinary
 P_ITMperm = varargin{3}; %Back pressure of OTM

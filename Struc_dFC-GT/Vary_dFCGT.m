@@ -20,7 +20,7 @@ if m ==0  %decision on whether to run constant vs varying recovery
     Utilization = zeros(n);
 %     i_array = [];
     recirc_vec_m = zeros(n);
-    const_recovery = linspace(.05,.99);
+    const_recovery = linspace(.05,.99)';
     for k= 1:n
         %ITM back pressure in kPa
         P_ITMperm = linspace(50,50)'; 
@@ -28,16 +28,16 @@ if m ==0  %decision on whether to run constant vs varying recovery
         recovery = ones(100,1).*const_recovery(k);
         TIT = linspace(1200,1200)';
         %Mass Flow of GT
-        Mflow = linspace(40,40)'; 
+        Mflow = linspace(20,20)'; 
         Fuel = 1; % 0 for no suplemental fuel into combustor, 1 for fixed % recovery
         Pr = linspace(15,15)'; % Compressor pressure ratio
         %Average Current Density for FC
-        iDen = linspace(.105,1.5)';
+        iDen = linspace(.5,.5)';
         vectorLength = max([length(Pr), length(P_ITMperm),length(recovery)]); %set length of vectors to correspond to given inputs
         Tin = zeros(vectorLength,1)+ 300;
         if Fuel==1
             [Eff,Eff_FC,Eff_GT,W_net,Wfc_vec,...
-                W_gt,Wc2,T_out,~,~,...
+                W_gt,Wc2,T_out,~,FC_Fuel_vec,combustorCH4,~,...
                 V_vec,Util,R_actual,Rt,recovery,Qextra,~,recirc_vec,nO2]...
                 = dFC_GT(Tin,Pr,P_ITMperm,TIT,Mflow,iDen,recovery);
             Efficiency_m(:,k) = Eff;
@@ -47,14 +47,16 @@ if m ==0  %decision on whether to run constant vs varying recovery
             Wfc_vec_m(:,k) = Wfc_vec;
             W_gt_m(:,k) = W_gt;
             Wc2_m(:,k) = Wc2;
-            T_out_m(:,k) = T_out;  
+            T_out_m(:,k) = T_out; 
+            FC_Fuel_m(:,k) = FC_Fuel_vec;
+            combustorCH4_m(:,k) = combustorCH4;
             V_vec_m(:,k) = V_vec;
             R_actual_m(:,k) = R_actual;
             Rt_m(:,k) = Rt;
             Qextra_m(:,k) = Qextra;
             Utilization(:,k) = Util;
             recirc_vec_m(:,k) = recirc_vec;
-            nO2_m(:,k) = nO2
+            nO2_m(:,k) = nO2;
 %             [Efficiency(:,k),Eff_FC(:,k),Eff_GT(:,k),W_net(:,k),Wfc_vec(:,k),...
 %                 W_gt(:,k),Wc2(:,k),T_out(:,k),~,~,...
 %                 V_vec(:,k),R_actual(:,k),Rt(:,k),recovery(:,k),Qextra(:,k),~,recirc_vec(:,k)]...
@@ -94,11 +96,11 @@ else
     vectorLength = max([length(Pr), length(P_ITMperm)]); %set length of vectors to correspond to given inputs
     Tin = zeros(vectorLength,1)+ 300;
     if Fuel==1
-       [Eff,Eff_FC,Eff_GT,W_net,Wfc_vec,W_gt,Wc2,T_out,TFlowOut,...
+       [Eff,Eff_FC,Eff_GT,W_net,Wfc_vec,W_gt,Wc2,T_out,TFlowOut,FC_Fuel_vec,combustorCH4,...
            ReactMix,V_vec,Utilization,R_actual,Rt,recovery,Qextra,i_array,recirc_vec,nO2]...
            = dFC_GT(Tin,Pr,P_ITMperm,TIT,Mflow,iDen,recovery);
     else
-       [Eff,Eff_FC,Eff_GT,W_net,Wfc_vec,W_gt,Wc2,T_out,TFlowOut,...
+       [Eff,Eff_FC,Eff_GT,W_net,Wfc_vec,W_gt,Wc2,T_out,TFlowOut,FC_Fuel_vec,combustorCH4,...
            ReactMix,V_vec,Utilization,R_actual,Rt,recovery,Qextra,i_array,recirc_vec,nO2]...
            = dFC_GT(Tin,Pr,P_ITMperm,TIT,Mflow,iDen);
     end
