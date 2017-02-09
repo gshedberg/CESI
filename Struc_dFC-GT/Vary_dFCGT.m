@@ -32,7 +32,7 @@ if m ==0  %decision on whether to run constant vs varying recovery
         Fuel = 1; % 0 for no suplemental fuel into combustor, 1 for fixed % recovery
         Pr = linspace(15,15)'; % Compressor pressure ratio
         %Average Current Density for FC
-        iDen = linspace(.5,.5)';
+        iDen = linspace(.105,1.5)';
         vectorLength = max([length(Pr), length(P_ITMperm),length(recovery)]); %set length of vectors to correspond to given inputs
         Tin = zeros(vectorLength,1)+ 300;
         if Fuel==1
@@ -69,7 +69,7 @@ if m ==0  %decision on whether to run constant vs varying recovery
         end
     end
     ax = gca;
-    set(gca,'FontSize',15)
+    set(gca,'FontSize',20)
     x = V_vec;
     y = const_recovery;
     z = Efficiency_m';
@@ -83,19 +83,19 @@ else
     %ITM back pressure in kPa
     P_ITMperm = linspace(50,50)'; 
     %Fixed value of recovery
-    recovery = linspace(.51,.51)'; 
+    recovery = linspace(.1,1)'; 
     TIT = linspace(1200,1200)';
     %Mass Flow of GT
     Mflow = linspace(20,20)'; 
     % GT pressure ratio
     Pr = linspace(15,15)';
     %Average Current Density to Determine # of Cells in FC
-    iDen = linspace(.105,1.5)';
+    iDen = linspace(.5,.5)';
     %Initialize
     Fuel = 0; % 0 for no suplemental fuel into combustor, 1 for fixed % recovery
     vectorLength = max([length(Pr), length(P_ITMperm)]); %set length of vectors to correspond to given inputs
     Tin = zeros(vectorLength,1)+ 300;
-    if Fuel==1
+    if Fuel==0
        [Eff,Eff_FC,Eff_GT,W_net,Wfc_vec,W_gt,Wc2,T_out,TFlowOut,FC_Fuel_vec,combustorCH4,...
            ReactMix,V_vec,Utilization,R_actual,Rt,recovery,Qextra,i_array,recirc_vec,nO2]...
            = dFC_GT(Tin,Pr,P_ITMperm,TIT,Mflow,iDen,recovery);
@@ -110,13 +110,14 @@ else
        recovery(A) = 1;
     end
     ax = gca;
-    set(gca,'FontSize',15)
+    set(gca,'FontSize',20)
 % %     set(gca,'Xtick',.4:.2:3);
     x = V_vec;
     y = recovery;
-    line(x,y,'linewidth',3,'color','r')
+%     line(x,y,'linewidth',3,'color','r')
+    line(x,y,'linewidth',3,'color','b','linestyle',':')
     ylabel('Percent Oxygen Recovered (%)')
-    xlabel('Operating Voltage')
+%     xlabel('Operating Volta ge')
 %   ax.XTickLabel = {'.760','.780','.800','.820','.840','.860','.880','.900','.920'}; %Voltage
 %   ax.XTickLabel ={'1.5','1.25','1','.75','.5','.25','0'}; %Current Density
 %   ax.XTickLabel ={'.300','.278','.258','.238','.218','.198','.178','.158','.138'};%Current Density

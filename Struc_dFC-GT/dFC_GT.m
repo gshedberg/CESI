@@ -14,7 +14,7 @@ if length(varargin)>6
 else recovery = ones(length(Tin),1).*.51; %Intial value of recovery
 %     const = TRUE;  %will run loop to solve for recovery to match TIT
 end
-Cogen = 0; %Decide whether hydrogen will be generated
+Cogen = 1; %Decide whether hydrogen will be generated
 S2C = linspace(2,2,length(Pr))';    %design steam to carbon ratio
 TurbEff = linspace(.88,.88,length(Pr))';      %Turbine Efficiency
 CompEff = linspace(.8,.8,length(Pr))';      %Compressor Efficiency
@@ -70,8 +70,8 @@ while max(abs(error))> 1e-4% loop to solve for TIT by varying the recovery perce
         Supply.O2 = O2Flow.O2(k);
         %%# of cells will determine current density and thus voltage !!
 %         Cells = .1231./(iDen(k)*L*W/(4000*F));
-        Cells = O2Flow.O2(k)./(iDen(k)*L*W/(4000*F));
-%         Cells = [924916.986173999];
+%         Cells = O2Flow.O2(k)./(iDen(k)*L*W/(4000*F));
+        Cells = [510000];
         Cells_vec(k,:) = Cells;
         [i,recirc,FC_Fuel,FlowOut,V,W_fc,U] = FuelCell_struc(1023,.25,.6,S2C(k),Supply,L,W,nodes,Cells,Pr(k));
         i_array(:,k) = i;
